@@ -1,0 +1,92 @@
+@if (loading()) {
+  <p class="status" role="status">{{ 'app.loading' | transloco }}</p>
+} @else if (error()) {
+  <p class="status status--error" role="alert">{{ error() }}</p>
+} @else {
+  @if (pack(); as p) {
+    <p class="scope" id="scope-label">{{ p.scopeKey | transloco }}</p>
+    <p class="disclaimer">{{ p.disclaimerKey | transloco }}</p>
+
+    <fieldset class="role-field" aria-labelledby="role-legend">
+      <legend id="role-legend">{{ 'app.roleLabel' | transloco }}</legend>
+      <div class="role-row">
+        @for (r of roles; track r) {
+          <button
+            type="button"
+            class="role-btn"
+            [class.is-active]="role() === r"
+            [attr.aria-pressed]="role() === r"
+            (click)="setRole(r)"
+          >
+            {{ 'app.roles.' + r | transloco }}
+          </button>
+        }
+      </div>
+    </fieldset>
+
+    <div class="layout">
+      <section class="timeline-panel" [attr.aria-labelledby]="'timeline-heading'">
+        <h2 id="timeline-heading" class="panel-title">{{ 'app.timeline' | transloco }}</h2>
+        <div
+          class="step-list"
+          role="listbox"
+          [attr.aria-activedescendant]="selectedId() !== null ? 'step-' + selectedId() : null"
+          tabindex="0"
+          (keydown)="onListKeydown($event)"
+          [attr.aria-label]="'app.timeline' | transloco"
+        >
+          @for (ph of sortedPhases(); track ph.id) {
+            <button
+              type="button"
+              class="step"
+              [class.is-active]="selectedId() === ph.id"
+              [id]="'step-' + ph.id"
+              role="option"
+              [attr.aria-selected]="selectedId() === ph.id"
+              (click)="selectPhase(ph.id)"
+            >
+              <span class="step__order">{{ ph.order + 1 }}</span>
+              <span class="step__title">{{ ph.titleKey | transloco }}</span>
+            </button>
+          }
+        </div>
+      </section>
+
+      <section class="detail-panel" [attr.aria-labelledby]="'detail-heading'" aria-live="polite">
+        <h2 id="detail-heading" class="visually-hidden">{{ 'app.phaseDetail' | transloco }}</h2>
+        @if (selectedPhase(); as sp) {
+          <article class="detail-card">
+            <h3>{{ sp.titleKey | transloco }}</h3>
+            <p>{{ bodyKey(sp) | transloco }}</p>
+            <button
+              type="button"
+              class="sources-toggle"
+              [attr.aria-expanded]="sourcesOpen()"
+              [attr.aria-controls]="'sources-panel-' + sp.id"
+              (click)="toggleSources()"
+            >
+              {{ 'app.sources' | transloco }}
+            </button>
+            @if (sourcesOpen()) {
+              <div class="sources-panel" [id]="'sources-panel-' + sp.id" role="region">
+                <h4 class="visually-hidden">{{ 'app.sources' | transloco }}</h4>
+                <ul>
+                  @for (s of sp.sources; track s.url) {
+                    <li>
+                      <a [href]="s.url" target="_blank" rel="noopener noreferrer">{{ s.title }}</a>
+                    </li>
+                  }
+                </ul>
+              </div>
+            }
+          </article>
+        }
+      </section>
+    </div>
+
+    <footer class="page-footer">
+      <p><span class="muted">{{ 'app.footerVersion' | transloco }}:</span> {{ p.contentVersion }}</p>
+      <p><span class="muted">{{ 'app.footerReviewed' | transloco }}:</span> {{ p.lastReviewed }}</p>
+    </footer>
+  }
+}

@@ -1,0 +1,127 @@
+{
+  "app": {
+    "title": "Election Process Assistant",
+    "scope": {
+      "lokSabha": "Lok Sabha (General Election) — educational overview"
+    },
+    "disclaimer": "Educational summary only. Verify every detail with the Election Commission of India and the Chief Electoral Officer for your state.",
+    "skipToContent": "Skip to main content",
+    "mainNav": "Primary",
+    "timeline": "Election timeline",
+    "glossary": "Glossary",
+    "roleLabel": "View as",
+    "roles": {
+      "voter": "Voter",
+      "candidate": "Candidate",
+      "observer": "Observer"
+    },
+    "sources": "Official sources",
+    "sourcesToggle": "Open or close official sources for this step",
+    "language": "Language",
+    "lang": {
+      "en": "English",
+      "hi": "Hindi"
+    },
+    "footerVersion": "Content version",
+    "footerReviewed": "Last reviewed",
+    "selectPhase": "Select a phase",
+    "phaseDetail": "Phase details",
+    "liveRegion": "Selected phase updated",
+    "searchGlossary": "Search glossary",
+    "loading": "Loading educational content…",
+    "home": "Home",
+    "toggleTheme": "Toggle light or dark theme"
+  },
+  "phases": {
+    "schedule": {
+      "title": "Election schedule and Model Code of Conduct",
+      "bodyVoter": "The Election Commission announces the poll schedule. The Model Code of Conduct sets norms for parties, candidates, and government during the election period.",
+      "bodyCandidate": "After notification, nominations open on published dates. The Model Code of Conduct applies to campaigning and day-to-day conduct.",
+      "bodyObserver": "Observers track compliance with ECI instructions and the Model Code of Conduct during the process."
+    },
+    "nominations": {
+      "title": "Filing of nominations",
+      "bodyVoter": "Candidates file nomination papers with the Returning Officer within the prescribed window.",
+      "bodyCandidate": "You submit your nomination during the notified period and follow statutory forms and deposits as per ECI handbooks.",
+      "bodyObserver": "Nomination filing follows a fixed timetable published by the Returning Officer."
+    },
+    "scrutiny": {
+      "title": "Scrutiny of nominations",
+      "bodyVoter": "The Returning Officer examines whether nomination papers are valid under law.",
+      "bodyCandidate": "Your papers may be accepted or rejected based on scrutiny outcomes; timelines are fixed by law and ECI directions.",
+      "bodyObserver": "Scrutiny is conducted openly as per ECI procedures."
+    },
+    "withdrawal": {
+      "title": "Withdrawal of candidatures",
+      "bodyVoter": "Candidates may withdraw within the notified window, finalizing the contest list.",
+      "bodyCandidate": "You may withdraw candidature before the deadline if you choose not to contest.",
+      "bodyObserver": "Withdrawal deadlines are published and strictly enforced."
+    },
+    "campaign": {
+      "title": "Campaign period",
+      "bodyVoter": "Parties and candidates campaign until 48 hours before polling ends (silence period rules apply as per ECI).",
+      "bodyCandidate": "You campaign within expenditure limits and conduct rules set by the ECI.",
+      "bodyObserver": "Observers note adherence to expenditure and conduct norms."
+    },
+    "polling": {
+      "title": "Polling day",
+      "bodyVoter": "Carry your EPIC or permitted ID, know your polling station, and follow queue and EVM+VVPAT procedures as guided by polling staff.",
+      "bodyCandidate": "You follow ECI rules near polling stations; agents are appointed as per law.",
+      "bodyObserver": "Observers monitor polling processes as authorized by the ECI."
+    },
+    "counting": {
+      "title": "Counting of votes",
+      "bodyVoter": "Votes are counted under ECI supervision with prescribed transparency measures.",
+      "bodyCandidate": "Counting follows ECI guidelines; results are declared for each constituency.",
+      "bodyObserver": "Observers witness counting arrangements as per ECI instructions."
+    },
+    "results": {
+      "title": "Declaration of results",
+      "bodyVoter": "Winners are declared; NOTA tallies appear as per rules. Use official ECI channels for certified outcomes.",
+      "bodyCandidate": "Results are published officially; further remedies follow election law.",
+      "bodyObserver": "Result declarations are documented and communicated through official channels."
+    }
+  },
+  "glossary": {
+    "nota": {
+      "term": "NOTA",
+      "definition": "None Of The Above — an option on the EVM to register no preference among candidates."
+    },
+    "constituency": {
+      "term": "Constituency",
+      "definition": "A territorial area that elects one member to Lok Sabha under the delimitation in force."
+    },
+    "epic": {
+      "term": "EPIC",
+      "definition": "Electors Photo Identity Card — commonly used ID to vote when listed in the electoral roll."
+    },
+    "ro": {
+      "term": "Returning Officer (RO)",
+      "definition": "Officer who receives nominations, conducts scrutiny, and supervises polling and counting for a constituency."
+    },
+    "nomination": {
+      "term": "Nomination",
+      "definition": "Formal submission of candidature within the notified period before scrutiny."
+    },
+    "scrutiny": {
+      "term": "Scrutiny",
+      "definition": "Legal examination of nomination papers for validity."
+    },
+    "mcc": {
+      "term": "Model Code of Conduct",
+      "definition": "ECI guidelines on conduct for parties, candidates, and government during elections."
+    },
+    "evm": {
+      "term": "EVM",
+      "definition": "Electronic Voting Machine used for recording votes in most constituencies."
+    },
+    "vvpat": {
+      "term": "VVPAT",
+      "definition": "Voter Verifiable Paper Audit Trail — slip showing symbol for verification before the vote is stored."
+    },
+    "counting": {
+      "term": "Counting",
+      "definition": "Official tally of valid votes under ECI supervision."
+    }
+  }
+}

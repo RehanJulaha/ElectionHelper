@@ -1,0 +1,21 @@
+<a class="skip-link" href="#main">{{ 'app.skipToContent' | transloco }}</a>
+<header class="app-header" role="banner">
+  <div class="app-header__inner">
+    <h1 class="app-title">{{ 'app.title' | transloco }}</h1>
+    <nav class="app-nav" role="navigation" [attr.aria-label]="'app.mainNav' | transloco">
+      <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">{{ 'app.home' | transloco }}</a>
+      <a routerLink="/glossary" routerLinkActive="is-active">{{ 'app.glossary' | transloco }}</a>
+    </nav>
+    <div class="app-toolbar">
+      <span id="lang-label" class="visually-hidden">{{ 'app.language' | transloco }}</span>
+      <div class="segmented" role="group" aria-labelledby="lang-label">
+        <button type="button" class="segmented__btn" [class.is-active]="uiLang() === 'en'" (click)="setLang('en')">{{ 'app.lang.en' | transloco }}</button>
+        <button type="button" class="segmented__btn" [class.is-active]="uiLang() === 'hi'" (click)="setLang('hi')">{{ 'app.lang.hi' | transloco }}</button>
+      </div>
+      <button type="button" class="theme-toggle" (click)="toggleTheme()">{{ 'app.toggleTheme' | transloco }}</button>
+    </div>
+  </div>
+</header>
+<main id="main" tabindex="-1">
+  <router-outlet />
+</main>
