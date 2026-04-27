@@ -8,6 +8,9 @@ const MAX_PROMPT = 2000;
 const MAX_TRANSLATE_CHARS = 8000;
 const MAX_TRANSLATE_ITEMS = 40;
 
+/** Gen2 callables sit behind Cloud Run; browsers need unauthenticated HTTP invoke so OPTIONS/POST reach the handler (App Check + Firebase still gate abuse). */
+const CALLABLE_BASE = { region: 'asia-south1' as const, invoker: 'public' as const };
+
 /** Secret Manager *names* only — never put key material or JSON in source (use `firebase functions:secrets:set`). */
 const geminiApiKey = defineSecret('GEMINI_API_KEY');
 const translateApiKey = defineSecret('GOOGLE_TRANSLATE_API_KEY');
@@ -41,7 +44,7 @@ async function translateWithGoogleCloud(
 }
 
 export const assistantAsk = onCall(
-  { region: 'asia-south1', enforceAppCheck: true, secrets: [geminiApiKey] },
+  { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [geminiApiKey] },
   async (
     request: CallableRequest
   ): Promise<{ readonly reply: string; readonly citations: readonly string[] }> => {
@@ -79,7 +82,7 @@ export const assistantAsk = onCall(
 );
 
 export const glossaryTranslate = onCall(
-  { region: 'asia-south1', enforceAppCheck: true, secrets: [translateApiKey] },
+  { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [translateApiKey] },
   async (request: CallableRequest): Promise<{ readonly translations: readonly string[] }> => {
     const target = typeof request.data?.target === 'string' ? request.data.target : 'hi';
     const texts = Array.isArray(request.data?.texts) ? (request.data.texts as unknown[]) : [];
@@ -112,7 +115,7 @@ export const glossaryTranslate = onCall(
 );
 
 export const exportTimelineSheet = onCall(
-  { region: 'asia-south1', enforceAppCheck: true, secrets: [sheetsServiceAccountJson] },
+  { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [sheetsServiceAccountJson] },
   async (
     request: CallableRequest
   ): Promise<{ readonly spreadsheetUrl: string; readonly spreadsheetId: string }> => {
