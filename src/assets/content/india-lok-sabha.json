@@ -1,0 +1,196 @@
+{
+  "scopeKey": "app.scope.lokSabha",
+  "contentVersion": "2026-04-27.1",
+  "lastReviewed": "2026-04-27",
+  "disclaimerKey": "app.disclaimer",
+  "phases": [
+    {
+      "id": "schedule-mcc",
+      "order": 0,
+      "titleKey": "phases.schedule.title",
+      "bodyKeys": {
+        "voter": "phases.schedule.bodyVoter",
+        "candidate": "phases.schedule.bodyCandidate",
+        "observer": "phases.schedule.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Voter Education",
+          "url": "https://www.eci.gov.in/voter-education/"
+        },
+        {
+          "title": "ECI Main Portal",
+          "url": "https://www.eci.gov.in/"
+        }
+      ]
+    },
+    {
+      "id": "nominations",
+      "order": 1,
+      "titleKey": "phases.nominations.title",
+      "bodyKeys": {
+        "voter": "phases.nominations.bodyVoter",
+        "candidate": "phases.nominations.bodyCandidate",
+        "observer": "phases.nominations.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Voter Education",
+          "url": "https://www.eci.gov.in/voter-education/"
+        }
+      ]
+    },
+    {
+      "id": "scrutiny",
+      "order": 2,
+      "titleKey": "phases.scrutiny.title",
+      "bodyKeys": {
+        "voter": "phases.scrutiny.bodyVoter",
+        "candidate": "phases.scrutiny.bodyCandidate",
+        "observer": "phases.scrutiny.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Voter Education",
+          "url": "https://www.eci.gov.in/voter-education/"
+        }
+      ]
+    },
+    {
+      "id": "withdrawal",
+      "order": 3,
+      "titleKey": "phases.withdrawal.title",
+      "bodyKeys": {
+        "voter": "phases.withdrawal.bodyVoter",
+        "candidate": "phases.withdrawal.bodyCandidate",
+        "observer": "phases.withdrawal.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Voter Education",
+          "url": "https://www.eci.gov.in/voter-education/"
+        }
+      ]
+    },
+    {
+      "id": "campaign",
+      "order": 4,
+      "titleKey": "phases.campaign.title",
+      "bodyKeys": {
+        "voter": "phases.campaign.bodyVoter",
+        "candidate": "phases.campaign.bodyCandidate",
+        "observer": "phases.campaign.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Voter Education",
+          "url": "https://www.eci.gov.in/voter-education/"
+        }
+      ]
+    },
+    {
+      "id": "polling",
+      "order": 5,
+      "titleKey": "phases.polling.title",
+      "bodyKeys": {
+        "voter": "phases.polling.bodyVoter",
+        "candidate": "phases.polling.bodyCandidate",
+        "observer": "phases.polling.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Voter Education",
+          "url": "https://www.eci.gov.in/voter-education/"
+        },
+        {
+          "title": "ECI EVM Information",
+          "url": "https://eci.gov.in/evm/"
+        }
+      ]
+    },
+    {
+      "id": "counting",
+      "order": 6,
+      "titleKey": "phases.counting.title",
+      "bodyKeys": {
+        "voter": "phases.counting.bodyVoter",
+        "candidate": "phases.counting.bodyCandidate",
+        "observer": "phases.counting.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Voter Education",
+          "url": "https://www.eci.gov.in/voter-education/"
+        }
+      ]
+    },
+    {
+      "id": "results",
+      "order": 7,
+      "titleKey": "phases.results.title",
+      "bodyKeys": {
+        "voter": "phases.results.bodyVoter",
+        "candidate": "phases.results.bodyCandidate",
+        "observer": "phases.results.bodyObserver"
+      },
+      "sources": [
+        {
+          "title": "ECI Main Portal",
+          "url": "https://www.eci.gov.in/"
+        }
+      ]
+    }
+  ],
+  "glossary": [
+    {
+      "id": "nota",
+      "termKey": "glossary.nota.term",
+      "definitionKey": "glossary.nota.definition"
+    },
+    {
+      "id": "constituency",
+      "termKey": "glossary.constituency.term",
+      "definitionKey": "glossary.constituency.definition"
+    },
+    {
+      "id": "epic",
+      "termKey": "glossary.epic.term",
+      "definitionKey": "glossary.epic.definition"
+    },
+    {
+      "id": "ro",
+      "termKey": "glossary.ro.term",
+      "definitionKey": "glossary.ro.definition"
+    },
+    {
+      "id": "nomination",
+      "termKey": "glossary.nomination.term",
+      "definitionKey": "glossary.nomination.definition"
+    },
+    {
+      "id": "scrutiny",
+      "termKey": "glossary.scrutiny.term",
+      "definitionKey": "glossary.scrutiny.definition"
+    },
+    {
+      "id": "mcc",
+      "termKey": "glossary.mcc.term",
+      "definitionKey": "glossary.mcc.definition"
+    },
+    {
+      "id": "evm",
+      "termKey": "glossary.evm.term",
+      "definitionKey": "glossary.evm.definition"
+    },
+    {
+      "id": "vvpat",
+      "termKey": "glossary.vvpat.term",
+      "definitionKey": "glossary.vvpat.definition"
+    },
+    {
+      "id": "counting",
+      "termKey": "glossary.counting.term",
+      "definitionKey": "glossary.counting.definition"
+    }
+  ]
+}

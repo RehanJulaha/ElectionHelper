@@ -1,0 +1,22 @@
+<h2 class="page-title">{{ 'app.glossary' | transloco }}</h2>
+<label class="search-label" for="glossary-search">{{ 'app.searchGlossary' | transloco }}</label>
+<input
+  id="glossary-search"
+  class="search-input"
+  type="search"
+  autocomplete="off"
+  [value]="query()"
+  (input)="onQueryInput($event)"
+/>
+@if (pack(); as p) {
+  <ul class="glossary-list">
+    @for (e of filtered(); track e.id) {
+      <li class="glossary-item">
+        <h3>{{ e.termKey | transloco }}</h3>
+        <p>{{ e.definitionKey | transloco }}</p>
+      </li>
+    }
+  </ul>
+} @else {
+  <p class="muted">{{ 'app.loading' | transloco }}</p>
+}
