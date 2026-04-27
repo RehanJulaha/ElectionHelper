@@ -1,10 +1,13 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // App Check: enable enforcement for Cloud Firestore under Firebase Console >
-    // App Check > APIs, and register the web app with reCAPTCHA Enterprise. The SPA
-    // initializes App Check when `src/assets/config/firebase-public.json` is filled.
-    // Callable functions use enforceAppCheck (see functions/src/index.ts).
+    // App Check enforcement (required for production hardening):
+    // 1) Firebase Console → App Check → register the Web app (reCAPTCHA Enterprise).
+    // 2) Firebase Console → App Check → APIs → enable *Enforcement* for Cloud Firestore.
+    // 3) Fill `appCheckSiteKey` in `src/assets/config/firebase-public.json` at deploy time.
+    // The callable `assistantAsk` already sets `enforceAppCheck: true` (functions/src/index.ts).
+    // Firestore rules cannot replace console-side App Check enforcement; they constrain
+    // which documents are readable once a request reaches the rules layer.
     match /contentPacks/{packId} {
       allow get: if packId == 'india-lok-sabha-published';
       allow list: if false;

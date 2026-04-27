@@ -19,14 +19,14 @@ export class ThemeService {
 
   initialize(): void {
     this.http.get<ThemeFile>('/assets/themes/theme.json').subscribe({
-      next: (data) => {
+      next: (data): void => {
         this.themeData.set(data);
         this.modeState.set('light');
         this.applyVariables(data.light);
         document.documentElement.setAttribute('data-theme', 'light');
         this.loaded.set(true);
       },
-      error: () => {
+      error: (): void => {
         this.loaded.set(true);
       },
     });

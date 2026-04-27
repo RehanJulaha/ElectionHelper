@@ -9,7 +9,7 @@ describe('ThemeService', () => {
   let service: ThemeService;
   let http: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach((): void => {
     TestBed.configureTestingModule({
       providers: [
         provideExperimentalZonelessChangeDetection(),
@@ -22,15 +22,15 @@ describe('ThemeService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('initial mode light', () => {
+  it('initial mode light', (): void => {
     expect(service.mode()).toBe('light');
   });
-  it('loads theme json', () => {
+  it('loads theme json', (): void => {
     service.initialize();
     http.expectOne('/assets/themes/theme.json').flush(themeJson);
     expect(service.loaded()).toBe(true);
   });
-  it('toggle switches mode', () => {
+  it('toggle switches mode', (): void => {
     service.initialize();
     http.expectOne('/assets/themes/theme.json').flush(themeJson);
     service.toggleMode();
@@ -38,7 +38,7 @@ describe('ThemeService', () => {
     service.toggleMode();
     expect(service.mode()).toBe('light');
   });
-  it('toggle no-op when theme missing', () => {
+  it('toggle no-op when theme missing', (): void => {
     service.initialize();
     http.expectOne('/assets/themes/theme.json').error(new ProgressEvent('error'));
     service.toggleMode();

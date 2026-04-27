@@ -1,8 +1,8 @@
-import { isDevMode } from '@angular/core';
+import { type EnvironmentProviders, isDevMode } from '@angular/core';
 import { provideTransloco } from '@ngneat/transloco';
 import { TranslocoHttpLoader } from './transloco-http.loader';
 
-export function translocoProviders() {
+export function translocoProviders(): readonly EnvironmentProviders[] {
   return provideTransloco({
     config: {
       availableLangs: ['en', 'hi'],

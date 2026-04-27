@@ -23,6 +23,7 @@ jobs:
       - run: npx ng lint
       - run: npm run build
       - run: npx vitest run --coverage
+      - run: npm run test:i18n
       - run: npx ng test --no-watch --browsers=ChromeHeadless
       # Pinned to actions/upload-artifact v4 tag (valid commit; previous SHA was invalid).
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -54,11 +55,27 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
-      - name: Lighthouse CI (score gates from lighthouserc.json)
+      - name: Lighthouse CI (assertions from repo-root lighthouserc.json)
         run: |
           npx http-server dist/epa/browser -p 4200 -c-1 -s &
           sleep 3
-          npx @lhci/cli autorun
+          npx @lhci/cli autorun --config=./lighthouserc.json
+
+  percy:
+    if: ${{ secrets.PERCY_TOKEN != '' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - run: npm ci
+      - run: npx playwright install chromium --with-deps
+      - name: Percy visual snapshots (BrowserStack Percy)
+        run: npx percy exec -- npx playwright test e2e/percy.spec.ts
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
 
   forbidden-paths:
     runs-on: ubuntu-latest

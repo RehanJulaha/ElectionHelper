@@ -9,7 +9,7 @@ describe('ElectionPackService', () => {
   let service: ElectionPackService;
   let http: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach((): void => {
     localStorage.clear();
     TestBed.configureTestingModule({
       providers: [
@@ -23,24 +23,24 @@ describe('ElectionPackService', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('starts loading true', () => {
+  it('starts loading true', (): void => {
     expect(service.loading()).toBe(true);
   });
 
-  it('parses pack from assets', () => {
+  it('parses pack from assets', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').flush(packJson);
     expect(service.loading()).toBe(false);
     expect(service.pack()?.contentVersion).toBeDefined();
   });
 
-  it('sets error on bad json', () => {
+  it('sets error on bad json', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').flush({});
     expect(service.error()).toBe('parse_failed');
   });
 
-  it('sets error on network failure when no cache', () => {
+  it('sets error on network failure when no cache', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').error(new ProgressEvent('error'));
     http.expectOne('/assets/content/india-lok-sabha.json').error(new ProgressEvent('error'));
@@ -49,7 +49,7 @@ describe('ElectionPackService', () => {
     expect(service.pack()).toBeNull();
   });
 
-  it('retries then succeeds', () => {
+  it('retries then succeeds', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').error(new ProgressEvent('error'));
     http.expectOne('/assets/content/india-lok-sabha.json').error(new ProgressEvent('error'));
@@ -58,7 +58,7 @@ describe('ElectionPackService', () => {
     expect(service.error()).toBeNull();
   });
 
-  it('clears error on success after failure', () => {
+  it('clears error on success after failure', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').error(new ProgressEvent('error'));
     http.expectOne('/assets/content/india-lok-sabha.json').error(new ProgressEvent('error'));
@@ -68,7 +68,7 @@ describe('ElectionPackService', () => {
     expect(service.error()).toBeNull();
   });
 
-  it('serves cached pack when all network attempts fail', () => {
+  it('serves cached pack when all network attempts fail', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').flush(packJson);
     expect(service.pack()).toBeTruthy();
@@ -80,13 +80,13 @@ describe('ElectionPackService', () => {
     expect(service.error()).toBeNull();
   });
 
-  it('pack has phases', () => {
+  it('pack has phases', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').flush(packJson);
     expect(service.pack()?.phases.length).toBeGreaterThan(0);
   });
 
-  it('pack has glossary', () => {
+  it('pack has glossary', (): void => {
     service.loadFromAssets();
     http.expectOne('/assets/content/india-lok-sabha.json').flush(packJson);
     expect(service.pack()?.glossary.length).toBeGreaterThan(0);

@@ -24,7 +24,7 @@ export class TimelineComponent {
   readonly role = this.roleSvc.role;
   readonly roles = ROLES;
 
-  readonly sortedPhases = computed(() => {
+  readonly sortedPhases = computed((): ElectionPhase[] => {
     const p = this.pack();
     return p ? sortPhasesByOrder(p.phases) : [];
   });
@@ -43,7 +43,7 @@ export class TimelineComponent {
   readonly sourcesOpen = signal(false);
 
   constructor() {
-    effect(() => {
+    effect((): void => {
       const phases = this.sortedPhases();
       const cur = this.selectedId();
       if (phases.length === 0) {

@@ -34,7 +34,7 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
-    translocoProviders(),
+    ...translocoProviders(),
     provideAppInitializer(bootstrapShell),
     provideAppInitializer(bootstrapFirebase),
   ],

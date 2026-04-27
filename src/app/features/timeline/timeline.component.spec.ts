@@ -14,7 +14,7 @@ describe('TimelineComponent', () => {
   let fixture: ComponentFixture<TimelineComponent>;
   let http: HttpTestingController;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [
@@ -41,32 +41,32 @@ describe('TimelineComponent', () => {
     fixture.detectChanges();
   });
 
-  it('creates', () => {
+  it('creates', (): void => {
     expect(fixture.componentInstance).toBeTruthy();
   });
-  it('selects first phase', () => {
+  it('selects first phase', (): void => {
     expect(fixture.componentInstance.selectedId()).toBeTruthy();
   });
-  it('selectPhase updates id', () => {
+  it('selectPhase updates id', (): void => {
     fixture.componentInstance.selectPhase('polling');
     expect(fixture.componentInstance.selectedId()).toBe('polling');
   });
-  it('setRole updates role service', () => {
+  it('setRole updates role service', (): void => {
     fixture.componentInstance.setRole('candidate');
     expect(TestBed.inject(ActiveRoleService).role()).toBe('candidate');
   });
-  it('toggleSources flips', () => {
+  it('toggleSources flips', (): void => {
     expect(fixture.componentInstance.sourcesOpen()).toBe(false);
     fixture.componentInstance.toggleSources();
     expect(fixture.componentInstance.sourcesOpen()).toBe(true);
   });
-  it('arrow down moves selection', () => {
+  it('arrow down moves selection', (): void => {
     fixture.componentInstance.selectPhase('schedule-mcc');
     const ev = new KeyboardEvent('keydown', { key: 'ArrowDown' });
     fixture.componentInstance.onListKeydown(ev);
     expect(fixture.componentInstance.selectedId()).not.toBe('schedule-mcc');
   });
-  it('arrow up from second goes back', () => {
+  it('arrow up from second goes back', (): void => {
     const sorted = fixture.componentInstance.sortedPhases();
     if (sorted.length < 2) {
       return;
@@ -76,21 +76,21 @@ describe('TimelineComponent', () => {
     fixture.componentInstance.onListKeydown(ev);
     expect(fixture.componentInstance.selectedId()).toBe(sorted[0]!.id);
   });
-  it('home selects first', () => {
+  it('home selects first', (): void => {
     const sorted = fixture.componentInstance.sortedPhases();
     fixture.componentInstance.selectPhase(sorted[sorted.length - 1]!.id);
     const ev = new KeyboardEvent('keydown', { key: 'Home' });
     fixture.componentInstance.onListKeydown(ev);
     expect(fixture.componentInstance.selectedId()).toBe(sorted[0]!.id);
   });
-  it('end selects last', () => {
+  it('end selects last', (): void => {
     const sorted = fixture.componentInstance.sortedPhases();
     fixture.componentInstance.selectPhase(sorted[0]!.id);
     const ev = new KeyboardEvent('keydown', { key: 'End' });
     fixture.componentInstance.onListKeydown(ev);
     expect(fixture.componentInstance.selectedId()).toBe(sorted[sorted.length - 1]!.id);
   });
-  it('bodyKey respects role', () => {
+  it('bodyKey respects role', (): void => {
     TestBed.inject(ActiveRoleService).setRole('observer');
     const sp = fixture.componentInstance.selectedPhase();
     expect(sp).toBeTruthy();
@@ -99,7 +99,7 @@ describe('TimelineComponent', () => {
       expect(k.length).toBeGreaterThan(0);
     }
   });
-  it('sortedPhases length matches pack', () => {
+  it('sortedPhases length matches pack', (): void => {
     expect(fixture.componentInstance.sortedPhases().length).toBe(8);
   });
 });

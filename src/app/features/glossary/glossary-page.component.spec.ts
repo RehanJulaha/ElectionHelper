@@ -13,7 +13,7 @@ describe('GlossaryPageComponent', () => {
   let fixture: ComponentFixture<GlossaryPageComponent>;
   let http: HttpTestingController;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [
@@ -37,19 +37,19 @@ describe('GlossaryPageComponent', () => {
     fixture.detectChanges();
   });
 
-  it('creates', () => {
+  it('creates', (): void => {
     expect(fixture.componentInstance).toBeTruthy();
   });
-  it('filtered lists all when query empty', () => {
+  it('filtered lists all when query empty', (): void => {
     expect(fixture.componentInstance.filtered().length).toBe(10);
   });
-  it('onQueryInput filters', () => {
+  it('onQueryInput filters', (): void => {
     const input = document.createElement('input');
     input.value = 'NOTA';
     fixture.componentInstance.onQueryInput({ target: input } as unknown as Event);
     expect(fixture.componentInstance.filtered().length).toBeGreaterThan(0);
   });
-  it('onQueryInput clears shows all', () => {
+  it('onQueryInput clears shows all', (): void => {
     const input = document.createElement('input');
     input.value = '';
     fixture.componentInstance.onQueryInput({ target: input } as unknown as Event);

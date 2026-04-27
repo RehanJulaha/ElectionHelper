@@ -10,9 +10,10 @@ function isNonEmpty(value: string | undefined): value is string {
 }
 
 /**
- * Initializes Firebase App Check (reCAPTCHA Enterprise) and Performance Monitoring
- * when `src/assets/config/firebase-public.json` contains a valid web config and
- * `appCheckSiteKey`. Safe no-op in local/dev when fields are empty.
+ * Initializes Firebase App Check (reCAPTCHA Enterprise), Performance Monitoring,
+ * and Analytics (GA4) when `src/assets/config/firebase-public.json` contains a
+ * valid web config. Analytics requires a non-empty `measurementId`. Safe no-op
+ * in local/dev when fields are empty.
  */
 @Injectable({ providedIn: 'root' })
 export class FirebaseBootstrapService {
@@ -31,11 +32,15 @@ export class FirebaseBootstrapService {
       messagingSenderId: cfg.messagingSenderId,
       appId: cfg.appId,
     };
-    const [{ initializeApp, getApps }, { initializeAppCheck, ReCaptchaEnterpriseProvider }, perf] =
+    if (isNonEmpty(cfg.measurementId)) {
+      options.measurementId = cfg.measurementId;
+    }
+    const [{ initializeApp, getApps }, { initializeAppCheck, ReCaptchaEnterpriseProvider }, perf, analyticsMod] =
       await Promise.all([
         import('firebase/app'),
         import('firebase/app-check'),
         import('firebase/performance'),
+        import('firebase/analytics'),
       ]);
     const app = getApps().length > 0 ? getApps()[0]! : initializeApp(options);
     if (isNonEmpty(cfg.appCheckSiteKey)) {
@@ -46,6 +51,12 @@ export class FirebaseBootstrapService {
     }
     if (this.doc.defaultView) {
       perf.getPerformance(app);
+    }
+    if (this.doc.defaultView && isNonEmpty(cfg.measurementId)) {
+      const supported = await analyticsMod.isSupported();
+      if (supported) {
+        analyticsMod.getAnalytics(app);
+      }
     }
   }
 }

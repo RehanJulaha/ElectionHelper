@@ -21,7 +21,7 @@ export class RouteFocusService {
         filter((e): e is NavigationEnd => e instanceof NavigationEnd),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe((event) => {
+      .subscribe((event): void => {
         const url = event.urlAfterRedirects.split('?')[0] ?? '';
         const isHome = url === '/' || url === '';
         if (this.isFirstNavigation && isHome) {
@@ -29,7 +29,7 @@ export class RouteFocusService {
           return;
         }
         this.isFirstNavigation = false;
-        queueMicrotask(() => {
+        queueMicrotask((): void => {
           document.getElementById('main')?.focus({ preventScroll: true });
         });
       });

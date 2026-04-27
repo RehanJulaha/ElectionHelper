@@ -5,25 +5,25 @@ import { ActiveRoleService } from './active-role.service';
 describe('ActiveRoleService', () => {
   let service: ActiveRoleService;
 
-  beforeEach(() => {
+  beforeEach((): void => {
     TestBed.configureTestingModule({
       providers: [provideExperimentalZonelessChangeDetection(), ActiveRoleService],
     });
     service = TestBed.inject(ActiveRoleService);
   });
 
-  it('defaults voter', () => {
+  it('defaults voter', (): void => {
     expect(service.role()).toBe('voter');
   });
-  it('sets candidate', () => {
+  it('sets candidate', (): void => {
     service.setRole('candidate');
     expect(service.role()).toBe('candidate');
   });
-  it('sets observer', () => {
+  it('sets observer', (): void => {
     service.setRole('observer');
     expect(service.role()).toBe('observer');
   });
-  it('can switch back to voter', () => {
+  it('can switch back to voter', (): void => {
     service.setRole('candidate');
     service.setRole('voter');
     expect(service.role()).toBe('voter');

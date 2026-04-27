@@ -3,6 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TranslocoDirective, TranslocoPipe, TranslocoService } from '@ngneat/transloco';
 import { map } from 'rxjs';
 import { filterGlossaryByQuery } from '../../../lib/election/glossary';
+import type { GlossaryEntry } from '../../../lib/election/schema';
 import { ElectionPackService } from '../../services/election-pack.service';
 
 @Component({
@@ -27,7 +28,7 @@ export class GlossaryPageComponent {
     { initialValue: this.transloco.getActiveLang() }
   );
 
-  readonly filtered = computed(() => {
+  readonly filtered = computed((): GlossaryEntry[] => {
     this.activeLang();
     const p = this.pack();
     const q = this.query();

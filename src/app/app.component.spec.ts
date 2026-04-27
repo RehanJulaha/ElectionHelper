@@ -11,7 +11,7 @@ import hi from '../assets/i18n/hi.json';
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
 
-  beforeEach(async () => {
+  beforeEach(async (): Promise<void> => {
     await TestBed.configureTestingModule({
       imports: [
         AppComponent,
@@ -30,22 +30,22 @@ describe('AppComponent', () => {
     fixture.detectChanges();
   });
 
-  it('creates', () => {
+  it('creates', (): void => {
     expect(fixture.componentInstance).toBeTruthy();
   });
-  it('renders skip link', () => {
+  it('renders skip link', (): void => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('.skip-link')).toBeTruthy();
   });
-  it('renders title text', () => {
+  it('renders title text', (): void => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.textContent).toContain('Election Process Assistant');
   });
-  it('has main landmark', () => {
+  it('has main landmark', (): void => {
     const el = fixture.nativeElement as HTMLElement;
     expect(el.querySelector('main#main')).toBeTruthy();
   });
-  it('setLang updates uiLang', () => {
+  it('setLang updates uiLang', (): void => {
     fixture.componentInstance.setLang('hi');
     fixture.detectChanges();
     expect(fixture.componentInstance.uiLang()).toBe('hi');

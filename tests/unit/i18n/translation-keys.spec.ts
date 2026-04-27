@@ -21,8 +21,8 @@ function collectObjectKeyPaths(value: unknown, prefix = ''): ReadonlySet<string>
   return paths;
 }
 
-describe('i18n translation key parity', () => {
-  it('en.json and hi.json define the same dot-notation key paths for nested objects', () => {
+describe('i18n translation key parity (en ↔ hi)', () => {
+  it('en.json and hi.json define the same dot-notation key paths for nested objects', (): void => {
     const dir = join(process.cwd(), 'src', 'assets', 'i18n');
     const en = JSON.parse(readFileSync(join(dir, 'en.json'), 'utf8')) as unknown;
     const hi = JSON.parse(readFileSync(join(dir, 'hi.json'), 'utf8')) as unknown;

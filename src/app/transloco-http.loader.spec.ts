@@ -8,7 +8,7 @@ describe('TranslocoHttpLoader', () => {
   let loader: TranslocoHttpLoader;
   let http: HttpTestingController;
 
-  beforeEach(() => {
+  beforeEach((): void => {
     TestBed.configureTestingModule({
       providers: [
         provideExperimentalZonelessChangeDetection(),
@@ -21,15 +21,15 @@ describe('TranslocoHttpLoader', () => {
     http = TestBed.inject(HttpTestingController);
   });
 
-  it('requests en json', (done) => {
-    loader.getTranslation('en').subscribe((t) => {
+  it('requests en json', (done: DoneFn): void => {
+    loader.getTranslation('en').subscribe((t): void => {
       expect(t).toBeTruthy();
       done();
     });
     http.expectOne('/assets/i18n/en.json').flush({ a: 1 });
   });
-  it('requests hi json', (done) => {
-    loader.getTranslation('hi').subscribe((t) => {
+  it('requests hi json', (done: DoneFn): void => {
+    loader.getTranslation('hi').subscribe((t): void => {
       expect(t).toBeTruthy();
       done();
     });

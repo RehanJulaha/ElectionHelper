@@ -19,11 +19,11 @@ function parseHostPort(): { readonly host: string; readonly port: number } {
   return { host, port };
 }
 
-describe.skipIf(!hasEmu)('firestore rules contentPacks', () => {
+describe.skipIf(!hasEmu)('firestore rules contentPacks', (): void => {
   let env: RulesTestEnvironment;
   const { host, port } = parseHostPort();
 
-  beforeAll(async () => {
+  beforeAll(async (): Promise<void> => {
     const rulesPath = join(process.cwd(), 'firestore.rules');
     const rules = readFileSync(rulesPath, 'utf8');
     env = await initializeTestEnvironment({
@@ -32,11 +32,11 @@ describe.skipIf(!hasEmu)('firestore rules contentPacks', () => {
     });
   });
 
-  afterAll(async () => {
+  afterAll(async (): Promise<void> => {
     await env.cleanup();
   });
 
-  it('allows get published pack', async () => {
+  it('allows get published pack', async (): Promise<void> => {
     const ctx = env.unauthenticatedContext();
     const db = ctx.firestore();
     await env.withSecurityRulesDisabled(async (ctx2) => {
@@ -45,7 +45,7 @@ describe.skipIf(!hasEmu)('firestore rules contentPacks', () => {
     });
     await assertSucceeds(getDoc(doc(db, 'contentPacks/india-lok-sabha-published')));
   });
-  it('denies get other pack id', async () => {
+  it('denies get other pack id', async (): Promise<void> => {
     const ctx = env.unauthenticatedContext();
     const db = ctx.firestore();
     await env.withSecurityRulesDisabled(async (ctx2) => {
@@ -54,17 +54,17 @@ describe.skipIf(!hasEmu)('firestore rules contentPacks', () => {
     });
     await assertFails(getDoc(doc(db, 'contentPacks/secret')));
   });
-  it('denies list collection', async () => {
+  it('denies list collection', async (): Promise<void> => {
     const ctx = env.unauthenticatedContext();
     const db = ctx.firestore();
     await assertFails(getDocs(collection(db, 'contentPacks')));
   });
-  it('denies write published pack from client', async () => {
+  it('denies write published pack from client', async (): Promise<void> => {
     const ctx = env.unauthenticatedContext();
     const db = ctx.firestore();
     await assertFails(setDoc(doc(db, 'contentPacks/india-lok-sabha-published'), { hacked: true }));
   });
-  it('denies random collection read', async () => {
+  it('denies random collection read', async (): Promise<void> => {
     const ctx = env.unauthenticatedContext();
     const db = ctx.firestore();
     await env.withSecurityRulesDisabled(async (ctx2) => {

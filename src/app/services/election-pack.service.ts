@@ -50,7 +50,7 @@ export class ElectionPackService {
         catchError(() => of(null)),
         finalize(() => this.loadingState.set(false)),
       )
-      .subscribe((raw) => {
+      .subscribe((raw): void => {
         if (raw === null) {
           if (!this.packState()) {
             this.errorState.set('network');

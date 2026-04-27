@@ -17,10 +17,10 @@ export class AppComponent {
   readonly uiLang = signal<'en' | 'hi'>(this.transloco.getActiveLang() as 'en' | 'hi');
 
   constructor() {
-    effect(() => {
+    effect((): void => {
       document.documentElement.lang = this.uiLang();
     });
-    effect(() => {
+    effect((): void => {
       document.documentElement.setAttribute('data-theme', this.theme.mode());
     });
   }
