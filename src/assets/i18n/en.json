@@ -29,6 +29,10 @@
     "liveRegion": "Selected phase updated",
     "searchGlossary": "Search glossary",
     "loading": "Loading educational content…",
+    "errors": {
+      "parse_failed": "Content could not be loaded. Try refreshing the page.",
+      "network": "Could not reach the server. Check your connection and try again."
+    },
     "home": "Home",
     "toggleTheme": "Toggle light or dark theme"
   },

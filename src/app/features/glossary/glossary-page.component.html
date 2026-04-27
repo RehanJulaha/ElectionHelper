@@ -8,15 +8,21 @@
   [value]="query()"
   (input)="onQueryInput($event)"
 />
-@if (pack(); as p) {
-  <ul class="glossary-list">
-    @for (e of filtered(); track e.id) {
-      <li class="glossary-item">
-        <h3>{{ e.termKey | transloco }}</h3>
-        <p>{{ e.definitionKey | transloco }}</p>
-      </li>
-    }
-  </ul>
+@if (loading() && !pack()) {
+  <p class="muted" role="status">{{ 'app.loading' | transloco }}</p>
+} @else if (error() && !pack()) {
+  <ng-container *transloco="let t">
+    <p class="muted status--error" role="alert">{{ t('app.errors.' + error()) }}</p>
+  </ng-container>
 } @else {
-  <p class="muted">{{ 'app.loading' | transloco }}</p>
+  @if (pack()) {
+    <ul class="glossary-list">
+      @for (e of filtered(); track e.id) {
+        <li class="glossary-item">
+          <h3>{{ e.termKey | transloco }}</h3>
+          <p>{{ e.definitionKey | transloco }}</p>
+        </li>
+      }
+    </ul>
+  }
 }

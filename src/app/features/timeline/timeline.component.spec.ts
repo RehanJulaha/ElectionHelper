@@ -15,6 +15,7 @@ describe('TimelineComponent', () => {
   let http: HttpTestingController;
 
   beforeEach(async () => {
+    localStorage.clear();
     await TestBed.configureTestingModule({
       imports: [
         TimelineComponent,

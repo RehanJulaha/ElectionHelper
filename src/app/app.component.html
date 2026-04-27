@@ -9,10 +9,33 @@
     <div class="app-toolbar">
       <span id="lang-label" class="visually-hidden">{{ 'app.language' | transloco }}</span>
       <div class="segmented" role="group" aria-labelledby="lang-label">
-        <button type="button" class="segmented__btn" [class.is-active]="uiLang() === 'en'" (click)="setLang('en')">{{ 'app.lang.en' | transloco }}</button>
-        <button type="button" class="segmented__btn" [class.is-active]="uiLang() === 'hi'" (click)="setLang('hi')">{{ 'app.lang.hi' | transloco }}</button>
+        <button
+          type="button"
+          class="segmented__btn"
+          [class.is-active]="uiLang() === 'en'"
+          [attr.aria-pressed]="uiLang() === 'en'"
+          (click)="setLang('en')"
+        >
+          {{ 'app.lang.en' | transloco }}
+        </button>
+        <button
+          type="button"
+          class="segmented__btn"
+          [class.is-active]="uiLang() === 'hi'"
+          [attr.aria-pressed]="uiLang() === 'hi'"
+          (click)="setLang('hi')"
+        >
+          {{ 'app.lang.hi' | transloco }}
+        </button>
       </div>
-      <button type="button" class="theme-toggle" (click)="toggleTheme()">{{ 'app.toggleTheme' | transloco }}</button>
+      <button
+        type="button"
+        class="theme-toggle"
+        [attr.aria-pressed]="theme.mode() === 'dark'"
+        (click)="toggleTheme()"
+      >
+        {{ 'app.toggleTheme' | transloco }}
+      </button>
     </div>
   </div>
 </header>

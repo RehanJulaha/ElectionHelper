@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TranslocoPipe, TranslocoService } from '@ngneat/transloco';
+import { TranslocoDirective, TranslocoPipe, TranslocoService } from '@ngneat/transloco';
 import { map } from 'rxjs';
 import { filterGlossaryByQuery } from '../../../lib/election/glossary';
 import { ElectionPackService } from '../../services/election-pack.service';
@@ -8,7 +8,7 @@ import { ElectionPackService } from '../../services/election-pack.service';
 @Component({
   standalone: true,
   selector: 'app-glossary-page',
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, TranslocoDirective],
   templateUrl: './glossary-page.component.html',
   styleUrl: './glossary-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -18,6 +18,8 @@ export class GlossaryPageComponent {
   private readonly transloco = inject(TranslocoService);
 
   readonly pack = this.packSvc.pack;
+  readonly loading = this.packSvc.loading;
+  readonly error = this.packSvc.error;
   readonly query = signal<string>('');
 
   private readonly activeLang = toSignal(

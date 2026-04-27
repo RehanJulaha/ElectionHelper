@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
-import { TranslocoPipe } from '@ngneat/transloco';
+import { TranslocoDirective, TranslocoPipe } from '@ngneat/transloco';
 import { sortPhasesByOrder, nextPhaseId, previousPhaseId, phaseById } from '../../../lib/election/order';
 import type { ElectionPhase } from '../../../lib/election/schema';
 import { ROLES, type ElectionRole } from '../../../lib/election/roles';
@@ -9,7 +9,7 @@ import { ElectionPackService } from '../../services/election-pack.service';
 @Component({
   standalone: true,
   selector: 'app-timeline',
-  imports: [TranslocoPipe],
+  imports: [TranslocoPipe, TranslocoDirective],
   templateUrl: './timeline.component.html',
   styleUrl: './timeline.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

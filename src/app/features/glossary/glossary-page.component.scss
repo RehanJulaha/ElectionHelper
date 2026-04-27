@@ -29,6 +29,10 @@
   box-shadow: var(--focus-ring, 0 0 0 3px rgb(37 99 235 / 0.45));
 }
 
+.status--error {
+  color: var(--color-error, #b91c1c);
+}
+
 .glossary-list {
   list-style: none;
   padding: 0;

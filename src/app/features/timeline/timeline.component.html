@@ -1,7 +1,9 @@
-@if (loading()) {
+@if (loading() && !pack()) {
   <p class="status" role="status">{{ 'app.loading' | transloco }}</p>
-} @else if (error()) {
-  <p class="status status--error" role="alert">{{ error() }}</p>
+} @else if (error() && !pack()) {
+  <ng-container *transloco="let t">
+    <p class="status status--error" role="alert">{{ t('app.errors.' + error()) }}</p>
+  </ng-container>
 } @else {
   @if (pack(); as p) {
     <p class="scope" id="scope-label">{{ p.scopeKey | transloco }}</p>

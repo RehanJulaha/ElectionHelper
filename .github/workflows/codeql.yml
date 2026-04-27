@@ -20,8 +20,9 @@ jobs:
         language: [javascript-typescript]
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - uses: github/codeql-action/init@9cfbefc0df466e8d67ece9ebe814b288e0f8453e
+      # Pinned to v3 tag target (2026-04-15); replace when bumping CodeQL major.
+      - uses: github/codeql-action/init@ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/autobuild@9cfbefc0df466e8d67ece9ebe814b288e0f8453e
-      - uses: github/codeql-action/analyze@9cfbefc0df466e8d67ece9ebe814b288e0f8453e
+      - uses: github/codeql-action/autobuild@ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a
+      - uses: github/codeql-action/analyze@ce64ddcb0d8d890d2df4a9d1c04ff297367dea2a

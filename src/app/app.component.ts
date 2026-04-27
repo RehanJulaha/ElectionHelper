@@ -12,7 +12,7 @@ import { ThemeService } from './services/theme.service';
 })
 export class AppComponent {
   private readonly transloco = inject(TranslocoService);
-  private readonly theme = inject(ThemeService);
+  protected readonly theme = inject(ThemeService);
 
   readonly uiLang = signal<'en' | 'hi'>(this.transloco.getActiveLang() as 'en' | 'hi');
 
