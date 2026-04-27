@@ -90,10 +90,15 @@ jobs:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
       - uses: google-github-actions/setup-gcloud@v2
       - name: Submit Cloud Build (only supported deploy path)
+        env:
+          # Optional repo variable: hosting | hosting-fs | full (default hosting). Use full when Blaze + secrets are ready.
+          FIREBASE_DEPLOY_MODE: ${{ vars.FIREBASE_DEPLOY_MODE }}
         run: |
           set -euo pipefail
           PROJECT_ID="$(node -e "console.log(JSON.parse(require('fs').readFileSync('.firebaserc','utf8')).projects.default)")"
-          gcloud builds submit --config=cloudbuild.yaml --project="${PROJECT_ID}" .
+          MODE="${FIREBASE_DEPLOY_MODE:-hosting}"
+          gcloud builds submit --config=cloudbuild.yaml --project="${PROJECT_ID}" \
+            --substitutions="_FIREBASE_DEPLOY_MODE=${MODE}" .
 
   forbidden-paths:
     runs-on: ubuntu-latest

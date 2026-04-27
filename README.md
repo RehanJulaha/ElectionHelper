@@ -93,19 +93,54 @@ Firestore rules specs are **skipped** in plain Vitest unless you use the emulato
 
 ## Deploy (Google Cloud Build → Firebase)
 
-Production deploys are expected to run through **`cloudbuild.yaml`** (build, tests, then `firebase deploy` for hosting, Firestore rules, and Functions). On pushes to **`main` / `master`**, GitHub Actions can submit that build when **`GCP_SA_KEY`** is configured (see `.github/workflows/ci.yml` → `deploy-cloud-build` job).
+Production deploys run through **`cloudbuild.yaml`** (install → `ng build` → tests → Functions TypeScript build → **`firebase deploy`**). On pushes to **`main` / `master`**, GitHub Actions submits that build when **`GCP_SA_KEY`** is set (see `deploy-cloud-build` in `.github/workflows/ci.yml`).
 
-1. Configure your Firebase project in **`.firebaserc`** (`default` project id).
-2. In **Cloud Build**, grant the build service account permission to deploy (Firebase / Artifact Registry / Cloud Functions as needed) and either:
-   - map **Secret Manager** `FIREBASE_CI_TOKEN` to env `FIREBASE_CI_TOKEN` on the deploy step (preferred), or
-   - set substitution **`_FIREBASE_CI_TOKEN`** on the trigger.
-3. Submit: `gcloud builds submit --config=cloudbuild.yaml .` (or rely on the CI job above).
+### Why Hosting used to “not deploy” everything
 
-Local one-off hosting deploys with the Firebase CLI are still possible for maintainers (`npm run build` then `npx firebase deploy --only hosting`), but **CI/CD should use Cloud Build** so deploy gating stays consistent.
+- **Cloud Functions (2nd gen)** need the Firebase/GCP project on the **Blaze (pay-as-you-go)** plan and **Cloud Build** / **Artifact Registry** APIs. Without Blaze, `firebase deploy --only functions` fails.
+- **Firestore rules** deploy needs the **Cloud Firestore API** enabled and a **Firestore database** created once in the console.
 
-For GCP project setup, budgets, and boundaries, see **`docs/GCP_PROVISIONING.md`**, **`docs/GCP_BUDGETS.md`**, and **`docs/GCP_FIRESTORE_BOUNDARIES.md`**.
+So **`cloudbuild.yaml` defaults `_FIREBASE_DEPLOY_MODE` to `hosting`** so Cloud Build can **ship the SPA reliably** even before Blaze/Firestore/Functions are ready. That is the “deployable on Google Cloud” baseline.
 
-Callable backends (`assistantAsk`, `glossaryTranslate`, `exportTimelineSheet`) read API keys and service-account JSON from **Secret Manager** via Firebase Functions `defineSecret` bindings (`GEMINI_API_KEY`, `GOOGLE_TRANSLATE_API_KEY`, `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`).
+### Configure GCP + Firebase once
+
+1. **`.firebaserc`** — `default` project id must match your Firebase project.
+2. **Blaze billing** — required before adding `functions` to deploy targets ([Firebase usage](https://console.firebase.google.com/)).
+3. **Firestore** — enable API + create database: [Firestore API](https://console.developers.google.com/apis/api/firestore.googleapis.com/overview) (then add `firestore` to targets when ready).
+4. **Deploy token for Cloud Build** — either:
+   - **Secret Manager**: secret `firebase-ci-token` (or similar), mapped in Cloud Build as env **`FIREBASE_CI_TOKEN`** (see commented `availableSecrets` block in `cloudbuild.yaml`), **or**
+   - Trigger substitution **`_FIREBASE_CI_TOKEN`** (CI token from `firebase login:ci`).
+5. **IAM** — the **Cloud Build service account** needs permission to run builds and to call **`firebase deploy`** for the targets you use (often **Firebase Admin** / **Service Usage** / **Cloud Functions Developer** as per your org).
+
+### Choosing what gets deployed (`_FIREBASE_DEPLOY_MODE`)
+
+Cloud Build uses a **mode** string (no commas — avoids `gcloud --substitutions` parsing issues):
+
+| Mode | `firebase deploy --only` | When to use |
+|------|---------------------------|-------------|
+| `hosting` | `hosting` | **Default** — SPA only; works without Blaze. |
+| `hosting-fs` | `hosting,firestore` | Firestore API + DB ready — publishes **rules**. |
+| `full` | `hosting,firestore,functions` | **Blaze** + Function **Secret Manager** secrets — ships **callables**. |
+
+**Manual submit:**
+
+```bash
+gcloud builds submit --config=cloudbuild.yaml --project=YOUR_PROJECT_ID \
+  --substitutions=_FIREBASE_DEPLOY_MODE=full .
+```
+
+**GitHub Actions:** set repository variable **`FIREBASE_DEPLOY_MODE`** to `full` (or `hosting-fs`) when your project is ready; unset or `hosting` keeps **hosting-only** deploys.
+
+**Local Firebase CLI (maintainers):**
+
+```bash
+npm run deploy:firebase:hosting    # SPA
+npm run deploy:firebase:all        # hosting + firestore + functions (needs Blaze + secrets)
+```
+
+Callable backends read **Secret Manager** names via `defineSecret`: `GEMINI_API_KEY`, `GOOGLE_TRANSLATE_API_KEY`, `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`.
+
+For broader GCP notes, see **`docs/GCP_PROVISIONING.md`**, **`docs/GCP_BUDGETS.md`**, **`docs/GCP_FIRESTORE_BOUNDARIES.md`**.
 
 ---
 

@@ -17,7 +17,12 @@
     "test:firestore-rules": "firebase emulators:exec --only firestore --project demo-epa \"npm run test:vitest:rules\"",
     "lint": "ng lint",
     "e2e": "playwright test",
-    "e2e:install": "playwright install chromium"
+    "e2e:install": "playwright install chromium",
+    "deploy:firebase:hosting": "ng build && firebase deploy --only hosting",
+    "deploy:firebase:firestore": "firebase deploy --only firestore",
+    "deploy:firebase:functions": "firebase deploy --only functions",
+    "deploy:firebase:all": "ng build && firebase deploy --only hosting,firestore,functions",
+    "deploy:cloudbuild": "gcloud builds submit --config=cloudbuild.yaml --substitutions=_FIREBASE_DEPLOY_MODE=hosting ."
   },
   "dependencies": {
     "@angular/common": "^19.2.0",
