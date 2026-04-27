@@ -106,11 +106,12 @@ So **`cloudbuild.yaml` defaults `_FIREBASE_DEPLOY_MODE` to `hosting`** so Cloud 
 
 1. **`.firebaserc`** — `default` project id must match your Firebase project.
 2. **Blaze billing** — required before adding `functions` to deploy targets ([Firebase usage](https://console.firebase.google.com/)).
-3. **Firestore** — enable API + create database: [Firestore API](https://console.developers.google.com/apis/api/firestore.googleapis.com/overview) (then add `firestore` to targets when ready).
-4. **Deploy token for Cloud Build** — either:
+3. **Secret Manager API** — required before first **`firebase deploy --only functions`** that uses `defineSecret` ([enable Secret Manager](https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=election-helper-a3a4a)). If you see HTTP 403 on `secretmanager.googleapis.com`, this API is still off or IAM is blocking access.
+4. **Firestore** — enable API + create database: [Firestore API](https://console.developers.google.com/apis/api/firestore.googleapis.com/overview) (then add `firestore` to targets when ready).
+5. **Deploy token for Cloud Build** — either:
    - **Secret Manager**: secret `firebase-ci-token` (or similar), mapped in Cloud Build as env **`FIREBASE_CI_TOKEN`** (see commented `availableSecrets` block in `cloudbuild.yaml`), **or**
    - Trigger substitution **`_FIREBASE_CI_TOKEN`** (CI token from `firebase login:ci`).
-5. **IAM** — the **Cloud Build service account** needs permission to run builds and to call **`firebase deploy`** for the targets you use (often **Firebase Admin** / **Service Usage** / **Cloud Functions Developer** as per your org).
+6. **IAM** — the **Cloud Build service account** needs permission to run builds and to call **`firebase deploy`** for the targets you use (often **Firebase Admin** / **Service Usage** / **Cloud Functions Developer** as per your org).
 
 ### Choosing what gets deployed (`_FIREBASE_DEPLOY_MODE`)
 
