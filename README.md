@@ -2,6 +2,8 @@
 
 [![CI](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/ci.yml)
 [![CodeQL](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/codeql.yml)
+[![Vitest lines ≥90%](https://img.shields.io/badge/Vitest%20%28src%2Flib%29-lines%20%E2%89%A5%2090%25-306998)](https://github.com/RehanJulaha/ElectionHelper/blob/main/vitest.config.ts)
+[![Vitest branches ≥85%](https://img.shields.io/badge/branches%20%E2%89%A5%2085%25-306998)](https://github.com/RehanJulaha/ElectionHelper/blob/main/vitest.config.ts)
 
 An **educational** single-page app for **India’s Lok Sabha (general election)** process: a step-by-step timeline, **role-based** copy (voter, candidate, observer), a searchable **glossary**, and links to **official Election Commission of India** sources. Content is informational only—users should always verify details with the ECI and their state CEO.
 
@@ -26,7 +28,7 @@ An **educational** single-page app for **India’s Lok Sabha (general election)*
 - **TypeScript 5.7** (strict), **RxJS 7**, **Zod** for runtime validation of bundled JSON packs.
 - **Firebase** — Hosting (SPA rewrites + security headers), Firestore rules, optional Functions; see `firebase.json`.
 - **Testing** — **Vitest** (domain logic under `src/lib/`), **Karma + Jasmine** (Angular units), **Playwright** + **axe-core** (e2e & accessibility smoke).
-- **CI** — GitHub Actions (`lint`, Vitest + coverage, Karma headless, Playwright, path guardrails, CodeQL).
+- **CI** — GitHub Actions (`lint`, production `ng build` bundle budgets, Vitest + coverage, Karma headless, Playwright + axe, Lighthouse CI gates, path guardrails, CodeQL).
 
 ---
 
@@ -81,7 +83,7 @@ npm run build
 
 ## Testing & coverage
 
-- **`src/lib/**`** — validated election helpers; covered by **Vitest** (`tests/unit/…`, `vitest.config.ts` thresholds).
+- **`src/lib/**`** — validated election helpers; covered by **Vitest** (`tests/unit/…`). Published gates: **lines ≥ 90%**, **statements ≥ 90%**, **functions ≥ 90%**, **branches ≥ 85%** (`vitest.config.ts`).
 - **`src/app/**`** — components and services; covered by **Karma** when you run `npm test` / `npm run test:ci`.
 - **E2E** — `e2e/` Playwright specs; run `npm run e2e:install` once per machine.
 
@@ -105,6 +107,9 @@ For GCP project setup, budgets, and boundaries, see **`docs/GCP_PROVISIONING.md`
 |-----|--------|
 | [docs/SCOPE_LOK_SABHA.md](docs/SCOPE_LOK_SABHA.md) | Product scope for the Lok Sabha education pack. |
 | [docs/A11Y_CHECKLIST.md](docs/A11Y_CHECKLIST.md) | Accessibility manual checklist. |
+| [docs/A11Y_AUDIT.md](docs/A11Y_AUDIT.md) | WCAG 2.1 AA conformance position and audit log. |
+| [docs/FIRESTORE_INDEXES.md](docs/FIRESTORE_INDEXES.md) | When to add composite indexes (currently none required). |
+| [docs/adr/](docs/adr/) | Architecture decision records (ADRs). |
 | [docs/GCP_PROVISIONING.md](docs/GCP_PROVISIONING.md) | Cloud / Firebase provisioning notes. |
 | [SECURITY.md](SECURITY.md) | Secret handling and reporting. |
 
@@ -122,7 +127,7 @@ Pitch and demo collateral: `docs/PITCH_DECK.md`, `docs/DEMO_SCRIPT.md`, `docs/DE
 
 ## Accessibility
 
-Keyboard-first timeline (arrow keys, Home/End), landmarks, skip link, translated error states, and automated **axe** checks in Playwright. See **`docs/A11Y_CHECKLIST.md`** for manual verification.
+Keyboard-first timeline (arrow keys, Home/End), landmarks, skip link, focus management on route changes, translated strings, and automated **axe** checks in Playwright. See **`docs/A11Y_AUDIT.md`** (conformance statement) and **`docs/A11Y_CHECKLIST.md`** (manual verification).
 
 ---
 
@@ -144,7 +149,7 @@ functions/       # Firebase Cloud Functions (optional)
 
 Workflows under **`.github/workflows/`**:
 
-- **`ci.yml`** — lint, Vitest + coverage artifact, Karma, Playwright, and a guard that rejects accidental commits of local IDE tooling paths (see the `forbidden-paths` job).
+- **`ci.yml`** — lint, production build (bundle budgets), Vitest + coverage artifact, Karma, Playwright, Lighthouse CI (`lighthouserc.json`: accessibility ≥ 0.9, performance ≥ 0.8), and a guard that rejects accidental commits of local IDE tooling paths (see the `forbidden-paths` job).
 - **`codeql.yml`** — CodeQL for JavaScript/TypeScript.
 - **`dependabot.yml`** — Dependency update automation.
 

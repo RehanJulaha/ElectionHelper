@@ -42,11 +42,22 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumWarning": "6kB",
+                  "maximumError": "10kB"
+                },
+                {
+                  "type": "any",
+                  "maximumWarning": "400kB",
+                  "maximumError": "750kB"
+                },
+                {
+                  "type": "allScript",
+                  "maximumWarning": "450kB",
+                  "maximumError": "900kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "serviceWorker": "ngsw-config.json"
             },
             "development": {
               "optimization": false,

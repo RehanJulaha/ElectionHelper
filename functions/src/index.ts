@@ -4,7 +4,7 @@ import * as logger from 'firebase-functions/logger';
 const MAX_PROMPT = 2000;
 
 export const assistantAsk = onCall(
-  { region: 'asia-south1', enforceAppCheck: false },
+  { region: 'asia-south1', enforceAppCheck: true },
   async (
     request: CallableRequest
   ): Promise<{ readonly reply: string; readonly citations: readonly string[] }> => {

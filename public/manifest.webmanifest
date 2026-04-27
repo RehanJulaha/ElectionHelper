@@ -1,0 +1,18 @@
+{
+  "name": "Election Process Assistant",
+  "short_name": "EPA",
+  "description": "Educational Lok Sabha election process assistant.",
+  "theme_color": "#0f172a",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ]
+}

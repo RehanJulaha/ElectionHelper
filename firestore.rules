@@ -1,6 +1,10 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // App Check: enable enforcement for Cloud Firestore under Firebase Console >
+    // App Check > APIs, and register the web app with reCAPTCHA Enterprise. The SPA
+    // initializes App Check when `src/assets/config/firebase-public.json` is filled.
+    // Callable functions use enforceAppCheck (see functions/src/index.ts).
     match /contentPacks/{packId} {
       allow get: if packId == 'india-lok-sabha-published';
       allow list: if false;

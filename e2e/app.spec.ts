@@ -21,6 +21,11 @@ test.describe('Election Process Assistant', () => {
     await page.getByRole('navigation').getByRole('link', { name: /Glossary|शब्दावली/i }).click();
     await expect(page).toHaveURL(/glossary/);
   });
+  test('after route change focus moves to main landmark', async ({ page }) => {
+    await page.goto('/');
+    await page.getByRole('navigation').getByRole('link', { name: /Glossary|शब्दावली/i }).click();
+    await expect(page.locator('#main')).toBeFocused();
+  });
   test('language toggle sets html lang', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: /Hindi|हिंदी/i }).click();
