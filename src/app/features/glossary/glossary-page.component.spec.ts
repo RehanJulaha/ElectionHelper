@@ -5,6 +5,8 @@ import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { GlossaryPageComponent } from './glossary-page.component';
 import { ElectionPackService } from '../../services/election-pack.service';
+import { AnalyticsEventsService } from '../../services/analytics-events.service';
+import { CloudFunctionsService } from '../../services/cloud-functions.service';
 import en from '../../../assets/i18n/en.json';
 import hi from '../../../assets/i18n/hi.json';
 import packJson from '../../../assets/content/india-lok-sabha.json';
@@ -28,6 +30,11 @@ describe('GlossaryPageComponent', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         ElectionPackService,
+        {
+          provide: AnalyticsEventsService,
+          useValue: { logGlossarySearched: (): void => undefined },
+        },
+        { provide: CloudFunctionsService, useValue: { isConfigured: false } },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(GlossaryPageComponent);

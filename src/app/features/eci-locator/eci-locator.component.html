@@ -1,0 +1,18 @@
+<h2 class="page-title">{{ 'locator.title' | transloco }}</h2>
+<p class="lede">{{ 'locator.lede' | transloco }}</p>
+@if (!hasKey()) {
+  <p class="muted" role="status">{{ 'locator.missingKey' | transloco }}</p>
+} @else {
+  @if (embedSrc(); as src) {
+    <div class="map-frame">
+      <iframe
+        class="map-frame__embed"
+        [title]="'locator.iframeTitle' | transloco"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        [src]="src"
+      ></iframe>
+    </div>
+    <p class="muted small">{{ 'locator.disclaimer' | transloco }}</p>
+  }
+}

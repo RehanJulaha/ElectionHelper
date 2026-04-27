@@ -1,0 +1,42 @@
+<h2 class="page-title">{{ 'assistant.title' | transloco }}</h2>
+<p class="lede">{{ 'assistant.lede' | transloco }}</p>
+@if (!canUse) {
+  <p class="muted" role="status">{{ 'assistant.unconfigured' | transloco }}</p>
+} @else {
+  <label class="field-label" for="assistant-prompt">{{ 'assistant.promptLabel' | transloco }}</label>
+  <textarea
+    id="assistant-prompt"
+    class="prompt"
+    rows="5"
+    [value]="prompt()"
+    (input)="onPromptInput($event)"
+    [attr.placeholder]="'assistant.placeholder' | transloco"
+  ></textarea>
+  <div class="row">
+    <button type="button" class="btn" [disabled]="loading() || prompt().trim().length === 0" (click)="submit()">
+      {{ 'assistant.submit' | transloco }}
+    </button>
+    @if (loading()) {
+      <span class="muted" role="status">{{ 'assistant.loading' | transloco }}</span>
+    }
+  </div>
+  @if (errorKey(); as ek) {
+    <p class="status status--error" role="alert">{{ ek! | transloco }}</p>
+  }
+  @if (result(); as r) {
+    <section class="reply" aria-labelledby="reply-heading">
+      <h3 id="reply-heading">{{ 'assistant.replyHeading' | transloco }}</h3>
+      <p>{{ r.reply }}</p>
+      @if (r.citations.length > 0) {
+        <h4>{{ 'assistant.citations' | transloco }}</h4>
+        <ul>
+          @for (c of r.citations; track c) {
+            <li>
+              <a [href]="c" target="_blank" rel="noopener noreferrer">{{ c }}</a>
+            </li>
+          }
+        </ul>
+      }
+    </section>
+  }
+}

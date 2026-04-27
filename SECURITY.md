@@ -24,7 +24,7 @@ Do not open public issues for security problems. Contact maintainers through you
 2. In **Firebase Console → App Check**, register the **Web** app with the **reCAPTCHA Enterprise** provider using that site key.
 3. Turn on **Enforcement** for **Cloud Firestore** and **Cloud Functions** (callable) once clients send valid tokens.
 4. Fill `src/assets/config/firebase-public.json` at deploy time (or replace via your pipeline) with the Firebase web config fields and **`appCheckSiteKey`**. Do not commit real API keys in public forks; use CI secrets to generate this file for release builds only.
-5. The SPA calls `initializeAppCheck` with `ReCaptchaEnterpriseProvider` when `appCheckSiteKey` is non-empty (`FirebaseBootstrapService`).
+5. The SPA registers App Check via `@angular/fire` (`provideAppCheck` + `ReCaptchaEnterpriseProvider`) when `appCheckSiteKey` is non-empty (`src/app/firebase/firebase.providers.ts`).
 
 **Local development:** leave `appCheckSiteKey` empty to skip App Check initialization, or use a [debug provider](https://firebase.google.com/docs/app-check/web/debug-provider) registered in the Firebase console for trusted machines.
 
@@ -32,11 +32,11 @@ Do not open public issues for security problems. Contact maintainers through you
 
 ## Firebase Performance Monitoring
 
-When a non-empty Firebase web config is present, the app initializes **Performance Monitoring** (`firebase/performance`) in the browser for real-user metrics. Disable or strip in privacy-sensitive deployments if required by policy.
+When a non-empty Firebase web config is present, the app registers **Performance Monitoring** through **`@angular/fire`** (`providePerformance` + `firebase/performance`) for real-user metrics and custom traces (for example timeline first render). Disable or strip in privacy-sensitive deployments if required by policy.
 
 ## Firebase Analytics (GA4)
 
-When `measurementId` is non-empty in `src/assets/config/firebase-public.json` and the browser passes `isSupported()`, the app initializes **Google Analytics** (`firebase/analytics`). Leave `measurementId` empty in environments where analytics must stay off. Configure the GA4 stream in the Firebase / Google Analytics console for the same project.
+When `measurementId` is non-empty in `src/assets/config/firebase-public.json`, the app registers **Google Analytics** via **`@angular/fire`** (`provideAnalytics`). **Collection is gated behind an in-app consent banner** (`PrivacyConsentService` + `ConsentBannerComponent`) aligned with India **DPDPA** expectations: users can decline analytics and still use the app; `setConsent` + `setAnalyticsCollectionEnabled` reflect the choice. Leave `measurementId` empty in environments where analytics must stay off.
 
 ## Google Cloud budget alerts
 

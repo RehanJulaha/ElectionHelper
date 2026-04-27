@@ -1,0 +1,46 @@
+.consent-banner {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 50;
+  padding: var(--space-md, 1rem);
+  background: color-mix(in srgb, var(--color-surface, #fff) 92%, transparent);
+  border-top: 1px solid var(--color-border, #ccc);
+  box-shadow: 0 -4px 24px color-mix(in srgb, var(--color-text, #000) 12%, transparent);
+}
+
+.consent-banner__inner {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.consent-banner__title {
+  margin: 0 0 var(--space-xs, 0.5rem);
+  font-size: 1.05rem;
+}
+
+.consent-banner__body {
+  margin: 0 0 var(--space-md, 1rem);
+  line-height: 1.45;
+}
+
+.consent-banner__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm, 0.5rem);
+}
+
+.consent-banner__btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--color-border, #ccc);
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #111);
+  cursor: pointer;
+}
+
+.consent-banner__btn--primary {
+  border-color: var(--color-primary, #1a56b3);
+  background: var(--color-primary, #1a56b3);
+  color: var(--color-on-primary, #fff);
+}

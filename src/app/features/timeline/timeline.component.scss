@@ -10,6 +10,20 @@
   max-width: 60ch;
 }
 
+.remote-promo {
+  margin: 0 0 var(--space-4, 1rem);
+  padding: var(--space-3, 0.75rem);
+  border-radius: var(--radius-md, 12px);
+  border: 1px dashed var(--color-border, #e2e8f0);
+  color: var(--color-text-muted, #475569);
+}
+
+.rajya-strip {
+  margin: 0 0 var(--space-4, 1rem);
+  font-size: 0.9rem;
+  color: var(--color-primary, #2563eb);
+}
+
 .status {
   color: var(--color-text-muted, #475569);
 }
@@ -111,6 +125,18 @@
   box-shadow: var(--shadow-card, none);
 }
 
+.step__check {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.step__check input {
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+}
+
 .step:focus-visible {
   outline: none;
   border-color: var(--color-primary, #2563eb);
@@ -188,6 +214,29 @@
   padding-top: var(--space-4, 1rem);
   border-top: 1px solid var(--color-border, #e2e8f0);
   font-size: 0.875rem;
+}
+
+.export-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  margin-bottom: var(--space-4, 1rem);
+}
+
+.export-btn {
+  min-height: 40px;
+  padding: 0 var(--space-4, 1rem);
+  border-radius: var(--radius-md, 12px);
+  border: 1px solid var(--color-border, #e2e8f0);
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #1e293b);
+  cursor: pointer;
+}
+
+.export-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 
 .muted {

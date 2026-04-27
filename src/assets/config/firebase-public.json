@@ -1,10 +1,11 @@
 {
-  "apiKey": "",
-  "authDomain": "",
-  "projectId": "",
-  "storageBucket": "",
-  "messagingSenderId": "",
-  "appId": "",
-  "measurementId": "",
-  "appCheckSiteKey": ""
+  "apiKey": "AIzaSyBBbd3ZsmjVJhfAF7MMpAumG5v56zfEadc",
+  "authDomain": "election-helper-a3a4a.firebaseapp.com",
+  "projectId": "election-helper-a3a4a",
+  "storageBucket": "election-helper-a3a4a.firebasestorage.app",
+  "messagingSenderId": "1069238803575",
+  "appId": "1:1069238803575:web:d398c386348eaf9a65ba72",
+  "measurementId": "G-TSHHWGCJ5V",
+  "appCheckSiteKey": "6LeNeM0sAAAAAE0kZLXKjAUKq91JuzDtlVnteMUk",
+  "mapsEmbedApiKey": "AIzaSyDRLNUGInt6AHHRdaSEgwTLUnaQ71kJrzI"
 }

@@ -1,13 +1,14 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // App Check enforcement (required for production hardening):
-    // 1) Firebase Console → App Check → register the Web app (reCAPTCHA Enterprise).
-    // 2) Firebase Console → App Check → APIs → enable *Enforcement* for Cloud Firestore.
-    // 3) Fill `appCheckSiteKey` in `src/assets/config/firebase-public.json` at deploy time.
-    // The callable `assistantAsk` already sets `enforceAppCheck: true` (functions/src/index.ts).
-    // Firestore rules cannot replace console-side App Check enforcement; they constrain
-    // which documents are readable once a request reaches the rules layer.
+    // App Check (treat as production "enforce: true"):
+    // 1) Firebase Console → App Check → register the Web app (reCAPTCHA Enterprise v3).
+    // 2) Firebase Console → App Check → Cloud Firestore → turn **Enforcement ON** (this is the
+    //    platform-level equivalent of rejecting traffic without a valid App Check token).
+    // 3) Ship non-empty `appCheckSiteKey` in `src/assets/config/firebase-public.json` at deploy time.
+    // 4) Callable functions use `enforceAppCheck: true` (see functions/src/index.ts).
+    // Security rules below only apply after App Check + transport succeed; they cannot substitute
+    // for Console enforcement.
     match /contentPacks/{packId} {
       allow get: if packId == 'india-lok-sabha-published';
       allow list: if false;

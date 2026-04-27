@@ -1,11 +1,14 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { provideExperimentalZonelessChangeDetection, signal } from '@angular/core';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { TimelineComponent } from './timeline.component';
 import { ElectionPackService } from '../../services/election-pack.service';
 import { ActiveRoleService } from '../../services/active-role.service';
+import { AnalyticsEventsService } from '../../services/analytics-events.service';
+import { CloudFunctionsService } from '../../services/cloud-functions.service';
+import { RemoteConfigFeatureService } from '../../services/remote-config-feature.service';
 import en from '../../../assets/i18n/en.json';
 import hi from '../../../assets/i18n/hi.json';
 import packJson from '../../../assets/content/india-lok-sabha.json';
@@ -30,6 +33,30 @@ describe('TimelineComponent', () => {
         provideHttpClientTesting(),
         ElectionPackService,
         ActiveRoleService,
+        {
+          provide: AnalyticsEventsService,
+          useValue: {
+            logTimelinePhaseViewed: (): void => undefined,
+            logRoleSwitched: (): void => undefined,
+          },
+        },
+        {
+          provide: RemoteConfigFeatureService,
+          useFactory: (): RemoteConfigFeatureService =>
+            ({
+              footerPromo: signal('').asReadonly(),
+              rajyaSabhaPreview: signal(false).asReadonly(),
+              electionPackChannel: signal<'assets' | 'firestore'>('assets').asReadonly(),
+              initializeWhenFirebaseReady: async (): Promise<void> => undefined,
+            }) as unknown as RemoteConfigFeatureService,
+        },
+        {
+          provide: CloudFunctionsService,
+          useValue: {
+            isConfigured: false,
+            exportTimelineSheet: async (): Promise<never> => Promise.reject(),
+          },
+        },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(TimelineComponent);

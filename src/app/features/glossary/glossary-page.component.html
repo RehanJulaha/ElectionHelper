@@ -1,4 +1,18 @@
 <h2 class="page-title">{{ 'app.glossary' | transloco }}</h2>
+@if (showCloudTranslate()) {
+  <div class="cloud-panel">
+    <p class="muted">{{ 'glossaryUi.cloudHint' | transloco }}</p>
+    <button type="button" class="cloud-btn" [disabled]="cloudWorking()" (click)="runCloudTranslate()">
+      {{ 'glossaryUi.cloudTranslate' | transloco }}
+    </button>
+    @if (cloudWorking()) {
+      <span class="muted" role="status">{{ 'glossaryUi.cloudWorking' | transloco }}</span>
+    }
+    @if (cloudError()) {
+      <span class="status--error" role="alert">{{ 'glossaryUi.cloudError' | transloco }}</span>
+    }
+  </div>
+}
 <label class="search-label" for="glossary-search">{{ 'app.searchGlossary' | transloco }}</label>
 <input
   id="glossary-search"
@@ -21,6 +35,9 @@
         <li class="glossary-item">
           <h3>{{ e.termKey | transloco }}</h3>
           <p>{{ e.definitionKey | transloco }}</p>
+          @if (cloudMap()[e.id]; as alt) {
+            <p class="cloud-def muted">{{ alt }}</p>
+          }
         </li>
       }
     </ul>

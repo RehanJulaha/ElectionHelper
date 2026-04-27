@@ -1,0 +1,60 @@
+.page-title {
+  margin-top: 0;
+}
+
+.lede {
+  max-width: 42rem;
+  line-height: 1.5;
+}
+
+.field-label {
+  display: block;
+  margin-top: var(--space-md, 1rem);
+  font-weight: 600;
+}
+
+.prompt {
+  display: block;
+  width: 100%;
+  max-width: 42rem;
+  margin-top: var(--space-xs, 0.5rem);
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--color-border, #ccc);
+  background: var(--color-surface, #fff);
+  color: var(--color-text, #111);
+  resize: vertical;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md, 1rem);
+  margin-top: var(--space-sm, 0.75rem);
+}
+
+.btn {
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-sm, 6px);
+  border: 1px solid var(--color-primary, #1a56b3);
+  background: var(--color-primary, #1a56b3);
+  color: var(--color-on-primary, #fff);
+  cursor: pointer;
+}
+
+.btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.reply {
+  margin-top: var(--space-lg, 1.5rem);
+  padding: var(--space-md, 1rem);
+  border-radius: var(--radius-md, 8px);
+  border: 1px solid var(--color-border, #ccc);
+  max-width: 48rem;
+}
+
+.status--error {
+  color: var(--color-danger, #b00020);
+}

@@ -11,7 +11,7 @@ Public Hosting and callable Cloud Functions are abuse targets. Firebase App Chec
 ## Decision
 
 1. Register the web app in Firebase App Check with reCAPTCHA Enterprise; enable **enforcement** for Cloud Firestore and Cloud Functions when traffic is ready for production.
-2. Initialize App Check in the SPA only when `src/assets/config/firebase-public.json` contains a non-empty `appCheckSiteKey` (see `FirebaseBootstrapService`).
+2. Initialize App Check in the SPA only when `src/assets/config/firebase-public.json` contains a non-empty `appCheckSiteKey` (see `src/app/firebase/firebase.providers.ts` via `provideAppCheck`).
 3. Callable `assistantAsk` uses `enforceAppCheck: true` in `functions/src/index.ts`.
 4. Extend Hosting **CSP** in `firebase.json` to allow required Google / App Check endpoints.
 

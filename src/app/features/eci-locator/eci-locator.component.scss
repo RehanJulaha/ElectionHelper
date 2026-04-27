@@ -1,0 +1,27 @@
+.page-title {
+  margin-top: 0;
+}
+
+.lede {
+  max-width: 42rem;
+  line-height: 1.5;
+}
+
+.map-frame {
+  margin-top: var(--space-md, 1rem);
+  border-radius: var(--radius-md, 8px);
+  overflow: hidden;
+  border: 1px solid var(--color-border, #ccc);
+  max-width: 48rem;
+}
+
+.map-frame__embed {
+  display: block;
+  width: 100%;
+  min-height: 20rem;
+  border: 0;
+}
+
+.small {
+  font-size: 0.9rem;
+}

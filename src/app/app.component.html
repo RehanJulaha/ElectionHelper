@@ -5,6 +5,8 @@
     <nav class="app-nav" role="navigation" [attr.aria-label]="'app.mainNav' | transloco">
       <a routerLink="/" routerLinkActive="is-active" [routerLinkActiveOptions]="{ exact: true }">{{ 'app.home' | transloco }}</a>
       <a routerLink="/glossary" routerLinkActive="is-active">{{ 'app.glossary' | transloco }}</a>
+      <a routerLink="/locator" routerLinkActive="is-active">{{ 'app.locatorNav' | transloco }}</a>
+      <a routerLink="/assistant" routerLinkActive="is-active">{{ 'app.assistantNav' | transloco }}</a>
     </nav>
     <div class="app-toolbar">
       <span id="lang-label" class="visually-hidden">{{ 'app.language' | transloco }}</span>
@@ -42,3 +44,4 @@
 <main id="main" tabindex="-1">
   <router-outlet />
 </main>
+<app-consent-banner />

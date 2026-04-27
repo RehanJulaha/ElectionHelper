@@ -9,6 +9,15 @@
     <p class="scope" id="scope-label">{{ p.scopeKey | transloco }}</p>
     <p class="disclaimer">{{ p.disclaimerKey | transloco }}</p>
 
+    @if (remoteFooterPromo(); as promo) {
+      @if (promo.length > 0) {
+        <p class="remote-promo">{{ promo }}</p>
+      }
+    }
+    @if (rajyaSabhaPreview()) {
+      <p class="rajya-strip">{{ 'timelineUi.rajyaPreview' | transloco }}</p>
+    }
+
     <fieldset class="role-field" aria-labelledby="role-legend">
       <legend id="role-legend">{{ 'app.roleLabel' | transloco }}</legend>
       <div class="role-row">
@@ -47,6 +56,14 @@
               [attr.aria-selected]="selectedId() === ph.id"
               (click)="selectPhase(ph.id)"
             >
+              <span class="step__check" (click)="$event.stopPropagation()">
+                <input
+                  type="checkbox"
+                  [checked]="isChecked(ph.id)"
+                  (change)="onCheckChange(ph.id, $event)"
+                  [attr.aria-label]="'timelineUi.markReviewed' | transloco"
+                />
+              </span>
               <span class="step__order">{{ ph.order + 1 }}</span>
               <span class="step__title">{{ ph.titleKey | transloco }}</span>
             </button>
@@ -87,6 +104,22 @@
     </div>
 
     <footer class="page-footer">
+      <div class="export-toolbar">
+        <button
+          type="button"
+          class="export-btn"
+          [disabled]="exportLoading() || !cloudFn.isConfigured"
+          (click)="exportChecklist()"
+        >
+          {{ 'timelineUi.exportSheet' | transloco }}
+        </button>
+        @if (exportLoading()) {
+          <span class="muted" role="status">{{ 'timelineUi.exportWorking' | transloco }}</span>
+        }
+        @if (exportError()) {
+          <span class="status--error" role="alert">{{ 'timelineUi.exportError' | transloco }}</span>
+        }
+      </div>
       <p><span class="muted">{{ 'app.footerVersion' | transloco }}:</span> {{ p.contentVersion }}</p>
       <p><span class="muted">{{ 'app.footerReviewed' | transloco }}:</span> {{ p.lastReviewed }}</p>
     </footer>

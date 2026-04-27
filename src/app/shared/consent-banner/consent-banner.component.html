@@ -1,0 +1,16 @@
+@if (visible()) {
+  <div class="consent-banner" role="dialog" aria-labelledby="consent-title" aria-modal="false">
+    <div class="consent-banner__inner">
+      <h2 id="consent-title" class="consent-banner__title">{{ 'consent.title' | transloco }}</h2>
+      <p class="consent-banner__body">{{ 'consent.body' | transloco }}</p>
+      <div class="consent-banner__actions">
+        <button type="button" class="consent-banner__btn consent-banner__btn--primary" (click)="accept()">
+          {{ 'consent.accept' | transloco }}
+        </button>
+        <button type="button" class="consent-banner__btn" (click)="decline()">
+          {{ 'consent.decline' | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+}

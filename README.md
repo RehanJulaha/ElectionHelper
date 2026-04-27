@@ -91,13 +91,21 @@ Firestore rules specs are **skipped** in plain Vitest unless you use the emulato
 
 ---
 
-## Deploy (Firebase Hosting)
+## Deploy (Google Cloud Build → Firebase)
+
+Production deploys are expected to run through **`cloudbuild.yaml`** (build, tests, then `firebase deploy` for hosting, Firestore rules, and Functions). On pushes to **`main` / `master`**, GitHub Actions can submit that build when **`GCP_SA_KEY`** is configured (see `.github/workflows/ci.yml` → `deploy-cloud-build` job).
 
 1. Configure your Firebase project in **`.firebaserc`** (`default` project id).
-2. Build the SPA: `npm run build`.
-3. Deploy hosting (and other targets if you use them): `npx firebase deploy --only hosting` (or full `firebase deploy`).
+2. In **Cloud Build**, grant the build service account permission to deploy (Firebase / Artifact Registry / Cloud Functions as needed) and either:
+   - map **Secret Manager** `FIREBASE_CI_TOKEN` to env `FIREBASE_CI_TOKEN` on the deploy step (preferred), or
+   - set substitution **`_FIREBASE_CI_TOKEN`** on the trigger.
+3. Submit: `gcloud builds submit --config=cloudbuild.yaml .` (or rely on the CI job above).
+
+Local one-off hosting deploys with the Firebase CLI are still possible for maintainers (`npm run build` then `npx firebase deploy --only hosting`), but **CI/CD should use Cloud Build** so deploy gating stays consistent.
 
 For GCP project setup, budgets, and boundaries, see **`docs/GCP_PROVISIONING.md`**, **`docs/GCP_BUDGETS.md`**, and **`docs/GCP_FIRESTORE_BOUNDARIES.md`**.
+
+Callable backends (`assistantAsk`, `glossaryTranslate`, `exportTimelineSheet`) read API keys and service-account JSON from **Secret Manager** via Firebase Functions `defineSecret` bindings (`GEMINI_API_KEY`, `GOOGLE_TRANSLATE_API_KEY`, `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`).
 
 ---
 

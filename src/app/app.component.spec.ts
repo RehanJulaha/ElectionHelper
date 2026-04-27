@@ -5,6 +5,8 @@ import { provideRouter } from '@angular/router';
 import { TranslocoTestingModule } from '@ngneat/transloco';
 import { AppComponent } from './app.component';
 import { routes } from './app.routes';
+import { AnalyticsEventsService } from './services/analytics-events.service';
+import { PrivacyConsentService } from './services/privacy-consent.service';
 import en from '../assets/i18n/en.json';
 import hi from '../assets/i18n/hi.json';
 
@@ -24,6 +26,8 @@ describe('AppComponent', () => {
         provideExperimentalZonelessChangeDetection(),
         provideRouter(routes),
         provideHttpClient(),
+        PrivacyConsentService,
+        { provide: AnalyticsEventsService, useValue: { logLanguageChanged: (): void => undefined } },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(AppComponent);

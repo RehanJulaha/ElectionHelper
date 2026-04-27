@@ -34,7 +34,9 @@
       "network": "Could not reach the server. Check your connection and try again."
     },
     "home": "Home",
-    "toggleTheme": "Toggle light or dark theme"
+    "toggleTheme": "Toggle light or dark theme",
+    "locatorNav": "ECI map",
+    "assistantNav": "Ask AI"
   },
   "phases": {
     "schedule": {
@@ -127,5 +129,47 @@
       "term": "Counting",
       "definition": "Official tally of valid votes under ECI supervision."
     }
+  },
+  "consent": {
+    "title": "Optional analytics (India DPDPA)",
+    "body": "We use Firebase Analytics only if you accept, to understand how features are used. App Check and hosting security always apply. You can decline analytics and still use the app.",
+    "accept": "Accept analytics",
+    "decline": "Decline"
+  },
+  "locator": {
+    "title": "ECI office map",
+    "lede": "Find the Election Commission of India headquarters on Google Maps (embed). Configure a Maps Embed API key in firebase-public.json to enable the map.",
+    "missingKey": "Maps Embed API key is not configured. Add mapsEmbedApiKey for this section.",
+    "iframeTitle": "Google Map of Election Commission of India office",
+    "disclaimer": "For polling-station lookup, always use your state CEO or the official ECI voter services channels."
+  },
+  "assistant": {
+    "title": "Ask about the election process",
+    "lede": "Educational answers are generated with Google Gemini via Cloud Functions. Always verify facts on eci.gov.in.",
+    "unconfigured": "Firebase is not configured in this build, so cloud answers are unavailable.",
+    "promptLabel": "Your question",
+    "placeholder": "Example: What does a Returning Officer do?",
+    "submit": "Ask",
+    "loading": "Getting an answer…",
+    "errorGeneric": "Could not reach the assistant. Try again later.",
+    "replyHeading": "Answer",
+    "citations": "Official links"
+  },
+  "glossaryUi": {
+    "cloudTranslate": "Improve Hindi with Google Cloud Translation",
+    "cloudHint": "Uses Cloud Translation API via Firebase Functions when Hindi is active.",
+    "cloudWorking": "Translating…",
+    "cloudError": "Translation is temporarily unavailable."
+  },
+  "timelineUi": {
+    "markReviewed": "Mark step reviewed",
+    "exportSheet": "Export checklist to Google Sheets",
+    "exportWorking": "Creating spreadsheet…",
+    "exportError": "Export failed. Check Cloud Functions and Sheets service account secret.",
+    "exportColPhase": "Phase",
+    "exportColChecked": "Reviewed",
+    "yes": "Yes",
+    "no": "No",
+    "rajyaPreview": "Preview: Remote Config indicates upcoming Rajya Sabha content may be enabled."
   }
 }

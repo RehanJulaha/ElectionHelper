@@ -8,9 +8,12 @@ import {
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withPreloading, PreloadAllModules } from '@angular/router';
 import { provideServiceWorker } from '@angular/service-worker';
+import { Analytics } from '@angular/fire/analytics';
 import { routes } from './app.routes';
+import { buildFirebaseClientProviders } from './firebase/firebase.providers';
 import { ElectionPackService } from './services/election-pack.service';
-import { FirebaseBootstrapService } from './services/firebase-bootstrap.service';
+import { PrivacyConsentService } from './services/privacy-consent.service';
+import { RemoteConfigFeatureService } from './services/remote-config-feature.service';
 import { RouteFocusService } from './services/route-focus.service';
 import { ThemeService } from './services/theme.service';
 import { translocoProviders } from './transloco.providers';
@@ -21,8 +24,13 @@ function bootstrapShell(): void {
   inject(ElectionPackService).loadFromAssets();
 }
 
-function bootstrapFirebase(): Promise<void> {
-  return inject(FirebaseBootstrapService).initializeWhenConfigured();
+function syncFirebaseAnalyticsConsent(): void {
+  inject(Analytics, { optional: true });
+  inject(PrivacyConsentService).syncMeasurementAfterAnalyticsReady();
+}
+
+function bootstrapRemoteConfig(): void {
+  void inject(RemoteConfigFeatureService).initializeWhenFirebaseReady();
 }
 
 export const appConfig: ApplicationConfig = {
@@ -34,8 +42,10 @@ export const appConfig: ApplicationConfig = {
       enabled: !isDevMode(),
       registrationStrategy: 'registerWhenStable:30000',
     }),
+    ...buildFirebaseClientProviders(),
     ...translocoProviders(),
     provideAppInitializer(bootstrapShell),
-    provideAppInitializer(bootstrapFirebase),
+    provideAppInitializer(syncFirebaseAnalyticsConsent),
+    provideAppInitializer(bootstrapRemoteConfig),
   ],
 };
