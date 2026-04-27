@@ -23,7 +23,8 @@ jobs:
       - run: npx ng lint
       - run: npx vitest run --coverage
       - run: npx ng test --no-watch --browsers=ChromeHeadless
-      - uses: actions/upload-artifact@4cec3f8aa04e39d1a68397de0c4cd6fb9dce8ec1
+      # Pinned to actions/upload-artifact v4 tag (valid commit; previous SHA was invalid).
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: coverage-vitest
           path: coverage/
