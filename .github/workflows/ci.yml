@@ -51,6 +51,6 @@ jobs:
         run: |
           set -euo pipefail
           if git ls-files | grep -E '^\.cursor/'; then
-            echo "Remove .cursor paths from git index"
+            echo "Remove local IDE tooling paths from git index (see workflow comment)"
             exit 1
           fi

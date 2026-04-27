@@ -144,7 +144,7 @@ functions/       # Firebase Cloud Functions (optional)
 
 Workflows under **`.github/workflows/`**:
 
-- **`ci.yml`** — lint, Vitest + coverage artifact, Karma, Playwright; blocks tracked `.cursor/` paths.
+- **`ci.yml`** — lint, Vitest + coverage artifact, Karma, Playwright, and a guard that rejects accidental commits of local IDE tooling paths (see the `forbidden-paths` job).
 - **`codeql.yml`** — CodeQL for JavaScript/TypeScript.
 - **`dependabot.yml`** — Dependency update automation.
 
