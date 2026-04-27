@@ -1,36 +1,161 @@
 # Election Process Assistant
 
-Educational web application for **Lok Sabha (General Election)** in India: interactive timeline, role-based summaries, glossary, and official **Election Commission of India** source links. Built with **Angular 19** (standalone, zoneless, signals), **Firebase / Google Cloud** deployment targets, and **@ngneat/transloco** (English and Hindi).
+[![CI](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/RehanJulaha/ElectionHelper/actions/workflows/codeql.yml)
 
-Engineering workflow: **Google Antigravity**. Build entrypoints: **Angular CLI**, **Firebase CLI**, **Google Cloud Build** (`cloudbuild.yaml`).
+An **educational** single-page app for **India’s Lok Sabha (general election)** process: a step-by-step timeline, **role-based** copy (voter, candidate, observer), a searchable **glossary**, and links to **official Election Commission of India** sources. Content is informational only—users should always verify details with the ECI and their state CEO.
 
-## Commands
+---
 
-| Command | Purpose |
-|--------|---------|
-| `npm start` | Dev server |
-| `npm run build` | Production build to `dist/epa/browser` |
-| `npm run test:vitest` | Node tests (domain + Firestore rules when emulator env set) |
-| `npm test` | Karma / Jasmine component and service tests |
-| `npm run test:ci` | Vitest coverage + Karma headless |
-| `npm run test:firestore-rules` | Firestore rules tests inside emulator |
-| `npm run e2e` | Playwright + axe |
-| `npm run lint` | ESLint |
+## Features
 
-## Firebase and GCP
+| Area | What you get |
+|------|----------------|
+| **Timeline** | Ordered phases with keyboard navigation, phase detail, and expandable “Official sources”. |
+| **Roles** | Switch perspective to see voter-, candidate-, or observer-oriented summaries where copy differs. |
+| **Glossary** | Filterable terms (e.g. NOTA, EPIC, RO, MCC) with English and Hindi strings via **Transloco**. |
+| **Resilience** | Election pack JSON is **Zod-validated**, fetched with **retries**, and **cached in `localStorage`** for repeat visits and flaky networks. |
+| **Theming** | Light/dark CSS variables loaded from `src/assets/themes/theme.json`. |
+| **i18n** | **English** (`en`) and **Hindi** (`hi`); all user-facing strings go through **@ngneat/transloco**. |
 
-1. Create a GCP project and enable **Firestore**, **Hosting**, **Cloud Functions**, **Cloud Build**, **Secret Manager**, **Vertex AI** as needed.
-2. Copy `.env.example` to a **local** env file (not committed). Set `.firebaserc` `default` project id.
-3. Deploy: `firebase deploy` or use **Cloud Build** with a CI token / WIF (see `docs/GCP_PROVISIONING.md`).
+---
 
-## Security
+## Tech stack
 
-No secrets in the repository. Use **Secret Manager** and IAM. See [SECURITY.md](SECURITY.md).
+- **Angular 19** — standalone components, lazy routes, **zoneless** change detection (`provideExperimentalZonelessChangeDetection`), **signals** for state.
+- **TypeScript 5.7** (strict), **RxJS 7**, **Zod** for runtime validation of bundled JSON packs.
+- **Firebase** — Hosting (SPA rewrites + security headers), Firestore rules, optional Functions; see `firebase.json`.
+- **Testing** — **Vitest** (domain logic under `src/lib/`), **Karma + Jasmine** (Angular units), **Playwright** + **axe-core** (e2e & accessibility smoke).
+- **CI** — GitHub Actions (`lint`, Vitest + coverage, Karma headless, Playwright, path guardrails, CodeQL).
+
+---
+
+## Prerequisites
+
+- **Node.js 22** (matches CI; LTS-aligned versions usually work—use 22 for parity with GitHub Actions).
+- **npm** 10+ (ships with Node 22).
+
+Optional for deploys and rules tests:
+
+- **Firebase CLI** (`npm i -g firebase-tools` or use `npx firebase`).
+- **Chrome** (or Chromium) locally for `npm test` / `npm run test:ci` headless runs.
+
+---
+
+## Quick start
+
+```bash
+git clone https://github.com/RehanJulaha/ElectionHelper.git
+cd ElectionHelper
+npm ci
+npm start
+```
+
+Open **http://localhost:4200/** — the dev server uses Angular’s default port unless you override it.
+
+**Production build** (output used by Firebase Hosting):
+
+```bash
+npm run build
+# Static files: dist/epa/browser
+```
+
+---
+
+## NPM scripts
+
+| Script | Description |
+|--------|-------------|
+| `npm start` | Dev server (`ng serve`). |
+| `npm run build` | Production build → `dist/epa/browser`. |
+| `npm run lint` | ESLint (`ng lint`). |
+| `npm test` | Karma + Jasmine, headless Chrome. |
+| `npm run test:vitest` | Vitest (watch in TTY). |
+| `npm run test:ci` | Vitest with coverage, then Karma headless (local CI parity). |
+| `npm run test:vitest:rules` | Firestore rules unit tests (Vitest). |
+| `npm run test:firestore-rules` | Same tests inside the **Firestore emulator** (`demo-epa` project alias). |
+| `npm run e2e:install` | Install Playwright Chromium browser. |
+| `npm run e2e` | Playwright suite (includes axe checks on key pages). |
+
+---
+
+## Testing & coverage
+
+- **`src/lib/**`** — validated election helpers; covered by **Vitest** (`tests/unit/…`, `vitest.config.ts` thresholds).
+- **`src/app/**`** — components and services; covered by **Karma** when you run `npm test` / `npm run test:ci`.
+- **E2E** — `e2e/` Playwright specs; run `npm run e2e:install` once per machine.
+
+Firestore rules specs are **skipped** in plain Vitest unless you use the emulator wrapper script above.
+
+---
+
+## Deploy (Firebase Hosting)
+
+1. Configure your Firebase project in **`.firebaserc`** (`default` project id).
+2. Build the SPA: `npm run build`.
+3. Deploy hosting (and other targets if you use them): `npx firebase deploy --only hosting` (or full `firebase deploy`).
+
+For GCP project setup, budgets, and boundaries, see **`docs/GCP_PROVISIONING.md`**, **`docs/GCP_BUDGETS.md`**, and **`docs/GCP_FIRESTORE_BOUNDARIES.md`**.
+
+---
+
+## Documentation
+
+| Doc | Topic |
+|-----|--------|
+| [docs/SCOPE_LOK_SABHA.md](docs/SCOPE_LOK_SABHA.md) | Product scope for the Lok Sabha education pack. |
+| [docs/A11Y_CHECKLIST.md](docs/A11Y_CHECKLIST.md) | Accessibility manual checklist. |
+| [docs/GCP_PROVISIONING.md](docs/GCP_PROVISIONING.md) | Cloud / Firebase provisioning notes. |
+| [SECURITY.md](SECURITY.md) | Secret handling and reporting. |
+
+Pitch and demo collateral: `docs/PITCH_DECK.md`, `docs/DEMO_SCRIPT.md`, `docs/DEMO_REHEARSAL.md`.
+
+---
+
+## Security & configuration
+
+- **Do not commit secrets.** Use environment variables or your cloud secret manager; see **`.env.example`** for non-sensitive placeholders only.
+- Hosting applies **CSP**, **nosniff**, **Referrer-Policy**, and **Permissions-Policy** (see `firebase.json`).
+- Details: **[SECURITY.md](SECURITY.md)**.
+
+---
 
 ## Accessibility
 
-WCAG-oriented UI (keyboard, focus, landmarks, `aria-live`, reduced motion). Automated checks: Playwright + `@axe-core/playwright`. Manual checklist: [docs/A11Y_CHECKLIST.md](docs/A11Y_CHECKLIST.md).
+Keyboard-first timeline (arrow keys, Home/End), landmarks, skip link, translated error states, and automated **axe** checks in Playwright. See **`docs/A11Y_CHECKLIST.md`** for manual verification.
+
+---
+
+## Repository layout (high level)
+
+```
+src/
+  app/           # Routes, shell, timeline & glossary features, services
+  assets/        # i18n, themes, static election pack JSON
+  lib/election/  # Zod schema, parsing, ordering, glossary helpers (Vitest)
+tests/           # Vitest + Firestore rules tests
+e2e/             # Playwright specs
+functions/       # Firebase Cloud Functions (optional)
+```
+
+---
+
+## Continuous integration
+
+Workflows under **`.github/workflows/`**:
+
+- **`ci.yml`** — lint, Vitest + coverage artifact, Karma, Playwright; blocks tracked `.cursor/` paths.
+- **`codeql.yml`** — CodeQL for JavaScript/TypeScript.
+- **`dependabot.yml`** — Dependency update automation.
+
+---
 
 ## License
 
-Private hackathon project unless otherwise stated.
+Private / hackathon use unless otherwise stated by the repository owner.
+
+---
+
+## Acknowledgements
+
+Educational content should be cross-checked with the **Election Commission of India** and official state election sites. Engineering workflow may use **Google Antigravity** alongside **Angular CLI**, **Firebase CLI**, and **Cloud Build** (`cloudbuild.yaml`) where applicable.
