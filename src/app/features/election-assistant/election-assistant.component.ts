@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { TranslocoPipe, TranslocoService } from '@ngneat/transloco';
+import { AnalyticsEventsService } from '../../services/analytics-events.service';
 import { CloudFunctionsService, type AssistantAskResponse } from '../../services/cloud-functions.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class ElectionAssistantComponent {
 
   private readonly fn = inject(CloudFunctionsService);
   private readonly transloco = inject(TranslocoService);
+  private readonly analytics = inject(AnalyticsEventsService);
 
   protected readonly prompt = signal('');
   protected readonly loading = signal(false);
@@ -57,6 +59,7 @@ export class ElectionAssistantComponent {
       .assistantAsk(p)
       .then((r) => {
         this.result.set(r);
+        this.analytics.logAssistantQuestionAsked(p.length);
       })
       .catch(() => {
         this.errorKey.set('assistant.errorGeneric');

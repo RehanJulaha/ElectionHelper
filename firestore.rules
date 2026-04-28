@@ -7,6 +7,7 @@ service cloud.firestore {
     //    platform-level equivalent of rejecting traffic without a valid App Check token).
     // 3) Ship non-empty `appCheckSiteKey` in `src/assets/config/firebase-public.json` at deploy time.
     // 4) Callable functions use `enforceAppCheck: true` (see functions/src/index.ts).
+    // 5) Web client: `initializeAppCheck` when `appCheckSiteKey` is set — src/app/app.config.ts (`buildFirebaseClientProviders`)
     // Security rules below only apply after App Check + transport succeed; they cannot substitute
     // for Console enforcement.
     match /contentPacks/{packId} {

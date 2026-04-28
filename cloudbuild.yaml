@@ -3,7 +3,7 @@
 # Prereqs (one-time in GCP / Firebase):
 #   - Billing on the Firebase/GCP project (Blaze) if you deploy Cloud Functions (2nd gen).
 #   - Cloud Build API enabled; Cloud Build SA can run this build.
-#   - For `firebase deploy`: a CI token (Secret Manager → FIREBASE_CI_TOKEN) or _FIREBASE_CI_TOKEN substitution.
+#   - For `firebase deploy`: Secret Manager secret `firebase-ci-token` → env FIREBASE_CI_TOKEN (see availableSecrets below).
 #   - For Firestore rules: Firestore API enabled + database created in console.
 #
 # Deploy mode (substitution _FIREBASE_DEPLOY_MODE — avoids comma issues in gcloud --substitutions):
@@ -36,16 +36,14 @@ steps:
     args: ['run', 'build']
   - name: node:20
     entrypoint: bash
+    secretEnv: ['FIREBASE_CI_TOKEN']
     args:
       - -c
       - |
         set -euo pipefail
         TOKEN="${FIREBASE_CI_TOKEN:-}"
         if [[ -z "${TOKEN}" ]]; then
-          TOKEN="${_FIREBASE_CI_TOKEN:-}"
-        fi
-        if [[ -z "${TOKEN}" ]]; then
-          echo "Skipping Firebase deploy: bind Secret Manager secret FIREBASE_CI_TOKEN to this step or set substitution _FIREBASE_CI_TOKEN."
+          echo "Skipping Firebase deploy: add Secret Manager secret firebase-ci-token (empty value skips deploy) or set FIREBASE_CI_TOKEN for this build."
           exit 0
         fi
         MODE="${_FIREBASE_DEPLOY_MODE:-hosting}"
@@ -65,13 +63,13 @@ steps:
 options:
   logging: CLOUD_LOGGING_ONLY
 
-# Optional: map Secret Manager → env for the deploy step (recommended in production):
-# availableSecrets:
-#   secretManager:
-#     - versionName: projects/$PROJECT_NUMBER/secrets/firebase-ci-token/versions/latest
-#       env: FIREBASE_CI_TOKEN
-# Then add to the deploy step above:  secretEnv: ['FIREBASE_CI_TOKEN']
+# Map Secret Manager → FIREBASE_CI_TOKEN for the deploy step.
+# Create secret id `firebase-ci-token` (empty payload = skip firebase deploy but still run tests/build).
+# Grant the Cloud Build service account roles/secretmanager.secretAccessor on that secret.
+availableSecrets:
+  secretManager:
+    - versionName: projects/$PROJECT_NUMBER/secrets/firebase-ci-token/versions/latest
+      env: FIREBASE_CI_TOKEN
 
 substitutions:
-  _FIREBASE_CI_TOKEN: ''
   _FIREBASE_DEPLOY_MODE: hosting

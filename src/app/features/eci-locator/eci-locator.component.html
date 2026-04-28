@@ -3,6 +3,19 @@
 @if (!hasKey()) {
   <p class="muted" role="status">{{ 'locator.missingKey' | transloco }}</p>
 } @else {
+  <div class="locator-toolbar">
+    <label class="locator-toolbar__label" for="eci-place-select">{{ 'locator.placeLabel' | transloco }}</label>
+    <select
+      id="eci-place-select"
+      class="locator-toolbar__select"
+      [value]="selectedPlaceId()"
+      (change)="onPlaceChange($event)"
+    >
+      @for (pid of placeIds; track pid) {
+        <option [value]="pid">{{ ('locator.places.' + pid) | transloco }}</option>
+      }
+    </select>
+  </div>
   @if (embedSrc(); as src) {
     <div class="map-frame">
       <iframe

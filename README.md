@@ -108,9 +108,7 @@ So **`cloudbuild.yaml` defaults `_FIREBASE_DEPLOY_MODE` to `hosting`** so Cloud 
 2. **Blaze billing** — required before adding `functions` to deploy targets ([Firebase usage](https://console.firebase.google.com/)).
 3. **Secret Manager API** — required before first **`firebase deploy --only functions`** that uses `defineSecret` ([enable Secret Manager](https://console.developers.google.com/apis/api/secretmanager.googleapis.com/overview?project=election-helper-a3a4a)). If you see HTTP 403 on `secretmanager.googleapis.com`, this API is still off or IAM is blocking access.
 4. **Firestore** — enable API + create database: [Firestore API](https://console.developers.google.com/apis/api/firestore.googleapis.com/overview) (then add `firestore` to targets when ready).
-5. **Deploy token for Cloud Build** — either:
-   - **Secret Manager**: secret `firebase-ci-token` (or similar), mapped in Cloud Build as env **`FIREBASE_CI_TOKEN`** (see commented `availableSecrets` block in `cloudbuild.yaml`), **or**
-   - Trigger substitution **`_FIREBASE_CI_TOKEN`** (CI token from `firebase login:ci`).
+5. **Deploy token for Cloud Build** — create Secret Manager secret **`firebase-ci-token`** (CI token from `firebase login:ci`; an empty version skips deploy but still runs build/tests). `cloudbuild.yaml` maps it to env **`FIREBASE_CI_TOKEN`** via `availableSecrets`. Grant the **Cloud Build** service account **`roles/secretmanager.secretAccessor`** on that secret.
 6. **IAM** — the **Cloud Build service account** needs permission to run builds and to call **`firebase deploy`** for the targets you use (often **Firebase Admin** / **Service Usage** / **Cloud Functions Developer** as per your org).
 
 ### Choosing what gets deployed (`_FIREBASE_DEPLOY_MODE`)
@@ -139,7 +137,7 @@ npm run deploy:firebase:hosting    # SPA
 npm run deploy:firebase:all        # hosting + firestore + functions (needs Blaze + secrets)
 ```
 
-Callable backends read **Secret Manager** names via `defineSecret`: `GEMINI_API_KEY`, `GOOGLE_TRANSLATE_API_KEY`, `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`.
+Callable backends: **`assistantAsk`** uses **Vertex AI** (default runtime credentials; enable Vertex AI API and grant **`roles/aiplatform.user`** to the Functions service account). **`glossaryTranslate`** and **`exportTimelineSheet`** read **Secret Manager** names via `defineSecret`: `GOOGLE_TRANSLATE_API_KEY`, `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`.
 
 For broader GCP notes, see **`docs/GCP_PROVISIONING.md`**, **`docs/GCP_BUDGETS.md`**, **`docs/GCP_FIRESTORE_BOUNDARIES.md`**.
 

@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { effect, inject, Injectable, signal } from '@angular/core';
+import { getApp } from 'firebase/app';
 import type { ElectionPack } from '../../lib/election/schema';
 import { safeParseElectionPack } from '../../lib/election/parse';
+import { isFirebaseWebConfigured } from '../firebase/firebase-public';
 import { catchError, finalize, of, retry } from 'rxjs';
+import { RemoteConfigFeatureService } from './remote-config-feature.service';
 
 /** Bundled Lok Sabha education pack (same-origin, cacheable). */
 const PACK_ASSET_URL = '/assets/content/india-lok-sabha.json';
@@ -18,13 +21,24 @@ export type ElectionPackLoadError = 'parse_failed' | 'network';
 @Injectable({ providedIn: 'root' })
 export class ElectionPackService {
   private readonly http = inject(HttpClient);
+  private readonly remote = inject(RemoteConfigFeatureService);
   private readonly packState = signal<ElectionPack | null>(null);
   private readonly errorState = signal<ElectionPackLoadError | null>(null);
   private readonly loadingState = signal(true);
+  private firestorePackInFlight = false;
 
   readonly pack = this.packState.asReadonly();
   readonly error = this.errorState.asReadonly();
   readonly loading = this.loadingState.asReadonly();
+
+  constructor() {
+    effect((): void => {
+      if (this.remote.electionPackChannel() !== 'firestore') {
+        return;
+      }
+      void this.loadPublishedPackFromFirestore();
+    });
+  }
 
   /**
    * Loads the election pack from `/assets`, with:
@@ -98,6 +112,35 @@ export class ElectionPackService {
       localStorage.setItem(PACK_STORAGE_KEY, JSON.stringify(pack));
     } catch {
       /* quota or private mode — non-fatal */
+    }
+  }
+
+  /**
+   * When Remote Config `election_pack_channel` is `firestore`, overlays the pack from
+   * `contentPacks/india-lok-sabha-published` (same schema as the asset JSON).
+   */
+  private async loadPublishedPackFromFirestore(): Promise<void> {
+    if (!isFirebaseWebConfigured() || this.firestorePackInFlight) {
+      return;
+    }
+    this.firestorePackInFlight = true;
+    try {
+      const { getFirestore, doc, getDoc } = await import('firebase/firestore');
+      const db = getFirestore(getApp());
+      const snap = await getDoc(doc(db, 'contentPacks', 'india-lok-sabha-published'));
+      if (!snap.exists()) {
+        return;
+      }
+      const parsed = safeParseElectionPack(snap.data() as unknown);
+      if (parsed.success) {
+        this.packState.set(parsed.data);
+        this.errorState.set(null);
+        this.persistPack(parsed.data);
+      }
+    } catch {
+      /* App Check / network / rules — keep asset-backed pack */
+    } finally {
+      this.firestorePackInFlight = false;
     }
   }
 }

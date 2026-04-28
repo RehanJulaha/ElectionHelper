@@ -1,9 +1,21 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 import { ElectionPackService } from './election-pack.service';
+import { RemoteConfigFeatureService } from './remote-config-feature.service';
 import packJson from '../../assets/content/india-lok-sabha.json';
+
+function remoteConfigStub(): RemoteConfigFeatureService {
+  const electionPackChannel = signal<'assets' | 'firestore'>('assets');
+  return {
+    footerPromo: signal('').asReadonly(),
+    rajyaSabhaPreview: signal(false).asReadonly(),
+    electionPackChannel: electionPackChannel.asReadonly(),
+    initializeWhenFirebaseReady: async (): Promise<void> => undefined,
+  } as unknown as RemoteConfigFeatureService;
+}
 
 describe('ElectionPackService', () => {
   let service: ElectionPackService;
@@ -17,6 +29,7 @@ describe('ElectionPackService', () => {
         provideHttpClient(),
         provideHttpClientTesting(),
         ElectionPackService,
+        { provide: RemoteConfigFeatureService, useFactory: remoteConfigStub },
       ],
     });
     service = TestBed.inject(ElectionPackService);

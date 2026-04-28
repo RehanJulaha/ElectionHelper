@@ -1,14 +1,16 @@
 import { onCall, HttpsError, type CallableRequest } from 'firebase-functions/v2/https';
 import { defineSecret } from 'firebase-functions/params';
 import * as logger from 'firebase-functions/logger';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { VertexAI } from '@google-cloud/vertexai';
 import { google } from 'googleapis';
 
 const MAX_PROMPT = 2000;
 const MAX_TRANSLATE_CHARS = 8000;
 const MAX_TRANSLATE_ITEMS = 40;
 const TIMELINE_EXPORT_SPREADSHEET_ID = '1aBfhaCp4jfZpQofiwlqg7r7yvVI2TrhLDrIa7P3ZXYQ';
-const GEMINI_MODEL_CANDIDATES = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest'];
+/** Vertex AI model ids (same region as the callable). */
+const GEMINI_VERTEX_MODELS = ['gemini-2.0-flash-001', 'gemini-1.5-flash-002', 'gemini-1.5-flash'] as const;
+const VERTEX_LOCATION = 'asia-south1' as const;
 const GEMINI_MAX_RETRIES_PER_MODEL = 2;
 const GEMINI_RETRY_BASE_DELAY_MS = 600;
 
@@ -16,7 +18,6 @@ const GEMINI_RETRY_BASE_DELAY_MS = 600;
 const CALLABLE_BASE = { region: 'asia-south1' as const, invoker: 'public' as const };
 
 /** Secret Manager *names* only — never put key material or JSON in source (use `firebase functions:secrets:set`). */
-const geminiApiKey = defineSecret('GEMINI_API_KEY');
 const translateApiKey = defineSecret('GOOGLE_TRANSLATE_API_KEY');
 const sheetsServiceAccountJson = defineSecret('GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON');
 
@@ -51,7 +52,29 @@ function isModelUnavailableError(error: unknown): boolean {
   if (!(error instanceof Error)) {
     return false;
   }
-  return error.message.includes('404') || error.message.includes('not found for API version');
+  const m = error.message.toLowerCase();
+  return (
+    m.includes('404') ||
+    m.includes('not found') ||
+    m.includes('was not found') ||
+    m.includes('not found for api version')
+  );
+}
+
+function gcpProjectId(): string | null {
+  const id = process.env.GCLOUD_PROJECT ?? process.env.GOOGLE_CLOUD_PROJECT ?? '';
+  return id.trim().length > 0 ? id.trim() : null;
+}
+
+function textFromVertexResponse(result: {
+  readonly response?: {
+    readonly candidates?: readonly {
+      readonly content?: { readonly parts?: readonly { readonly text?: string }[] };
+    }[];
+  };
+}): string {
+  const t = result.response?.candidates?.[0]?.content?.parts?.[0]?.text;
+  return typeof t === 'string' ? t.trim() : '';
 }
 
 function isModelTransientCapacityError(error: unknown): boolean {
@@ -71,7 +94,7 @@ function wait(ms: number): Promise<void> {
 }
 
 export const assistantAsk = onCall(
-  { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [geminiApiKey] },
+  { ...CALLABLE_BASE, enforceAppCheck: true },
   async (
     request: CallableRequest
   ): Promise<{ readonly reply: string; readonly citations: readonly string[] }> => {
@@ -82,24 +105,22 @@ export const assistantAsk = onCall(
     if (prompt.length > MAX_PROMPT) {
       throw new HttpsError('invalid-argument', 'prompt_too_long');
     }
-    const key = geminiApiKey.value().trim();
-    if (key.length === 0) {
-      logger.warn('assistant_stub_no_secret');
-      return {
-        reply:
-          'Gemini API key is not bound in Secret Manager yet. Wire Secret Manager secret GEMINI_API_KEY to this function, then redeploy. Until then, verify facts on https://www.eci.gov.in/ .',
-        citations: ['https://www.eci.gov.in/voter-education/'],
-      };
+    const project = gcpProjectId();
+    if (!project) {
+      logger.warn('assistant_no_gcp_project');
+      throw new HttpsError('failed-precondition', 'vertex_not_configured');
     }
+    const fullPrompt = `${RAG_CONTEXT}\n\nUser question:\n${prompt}\n\nRespond in plain text under 400 words.`;
     try {
-      const genAI = new GoogleGenerativeAI(key);
-      const fullPrompt = `${RAG_CONTEXT}\n\nUser question:\n${prompt}\n\nRespond in plain text under 400 words.`;
-      for (const modelName of GEMINI_MODEL_CANDIDATES) {
+      const vertex = new VertexAI({ project, location: VERTEX_LOCATION });
+      for (const modelName of GEMINI_VERTEX_MODELS) {
         for (let attempt = 0; attempt <= GEMINI_MAX_RETRIES_PER_MODEL; attempt += 1) {
           try {
-            const model = genAI.getGenerativeModel({ model: modelName });
-            const result = await model.generateContent(fullPrompt);
-            const text = result.response.text().trim();
+            const model = vertex.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent({
+              contents: [{ role: 'user', parts: [{ text: fullPrompt }] }],
+            });
+            const text = textFromVertexResponse(result);
             return {
               reply: text.length > 0 ? text : 'No model text returned.',
               citations: ['https://www.eci.gov.in/voter-education/', 'https://www.eci.gov.in/'],
@@ -124,7 +145,7 @@ export const assistantAsk = onCall(
       if (e instanceof HttpsError) {
         throw e;
       }
-      logger.error('assistant_gemini_error', e);
+      logger.error('assistant_vertex_error', e);
       throw new HttpsError('internal', 'assistant_failed');
     }
   }

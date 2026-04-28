@@ -10,8 +10,8 @@
 
 ## Backend (optional)
 
-- **Cloud Functions (2nd gen)** in `functions/`: callable `assistantAsk` stub (replace body with Vertex Gemini + Secret Manager as per ops runbook).
-- **Firestore:** `contentPacks/india-lok-sabha-published` read-only from clients; rules in `firestore.rules`.
+- **Cloud Functions (2nd gen)** in `functions/`: callables `assistantAsk` (**Vertex AI** Gemini via `@google-cloud/vertexai` + default compute credentials), `glossaryTranslate` (Cloud Translation API), `exportTimelineSheet` (Google Sheets). All use `enforceAppCheck: true`; translate and Sheets use **Secret Manager**–bound params (`defineSecret`). Grant the Functions runtime service account **`roles/aiplatform.user`** and enable the **Vertex AI API** for `assistantAsk`.
+- **Firestore:** `contentPacks/india-lok-sabha-published` read-only from clients; rules in `firestore.rules`. The SPA can load this document when Remote Config `election_pack_channel` is `firestore` (see `ElectionPackService`).
 
 ## CI
 

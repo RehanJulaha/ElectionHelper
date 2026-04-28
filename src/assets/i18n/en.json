@@ -138,8 +138,14 @@
   },
   "locator": {
     "title": "ECI office map",
-    "lede": "Find the Election Commission of India headquarters on Google Maps (embed). Configure a Maps Embed API key in firebase-public.json to enable the map.",
+    "lede": "Find ECI and example election offices on Google Maps (Maps Embed API). Add mapsEmbedApiKey in firebase-public.json and restrict the key by HTTP referrer.",
     "missingKey": "Maps Embed API key is not configured. Add mapsEmbedApiKey for this section.",
+    "placeLabel": "Show on map",
+    "places": {
+      "eci_hq": "ECI — Nirvachan Sadan (Ashoka Road)",
+      "eci_vikram": "ECI — Vikram Sadan (ITO)",
+      "ceo_delhi_example": "Example state CEO office (Delhi)"
+    },
     "iframeTitle": "Google Map of Election Commission of India office",
     "disclaimer": "For polling-station lookup, always use your state CEO or the official ECI voter services channels."
   },
