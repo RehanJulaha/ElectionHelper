@@ -30,6 +30,12 @@ An **educational** single-page app for **India’s Lok Sabha (general election)*
 - **Testing** — **Vitest** (domain logic under `src/lib/`), **Karma + Jasmine** (Angular units), **Playwright** + **axe-core** (e2e & accessibility smoke).
 - **CI** — GitHub Actions (`lint`, production `ng build` bundle budgets, Vitest + coverage, Karma headless, Playwright + axe, Lighthouse CI gates, path guardrails, CodeQL).
 
+### Google Cloud and Firebase (inventory)
+
+This repo uses **Firebase Hosting**, **Firestore** (rules + optional client reads), **Cloud Functions (2nd gen)** in **`asia-south1`**, **Vertex AI (Gemini)** for the election assistant callable, **Cloud Translation** and **Google Sheets** for other callables, **Secret Manager** for function secrets, **App Check**, **Remote Config**, **Performance**, and **Analytics (GA4)**. CI deploys through **Cloud Build** (see **`cloudbuild.yaml`**) and **GitHub Actions** (`.github/workflows/ci.yml`).
+
+**Canonical map (products, regions, callable names, file links):** [docs/GOOGLE_CLOUD_FIREBASE_USAGE.md](docs/GOOGLE_CLOUD_FIREBASE_USAGE.md). SPA entry points for callables: [`src/app/services/cloud-functions.service.ts`](src/app/services/cloud-functions.service.ts). Backend: [`functions/src/index.ts`](functions/src/index.ts).
+
 ---
 
 ## Prerequisites
@@ -153,6 +159,7 @@ For broader GCP notes, see **`docs/GCP_PROVISIONING.md`**, **`docs/GCP_BUDGETS.m
 | [docs/FIRESTORE_INDEXES.md](docs/FIRESTORE_INDEXES.md) | When to add composite indexes (currently none required). |
 | [docs/adr/](docs/adr/) | Architecture decision records (ADRs). |
 | [docs/GCP_PROVISIONING.md](docs/GCP_PROVISIONING.md) | Cloud / Firebase provisioning notes. |
+| [docs/GOOGLE_CLOUD_FIREBASE_USAGE.md](docs/GOOGLE_CLOUD_FIREBASE_USAGE.md) | Inventory of GCP/Firebase products, regions, and callable APIs. |
 | [SECURITY.md](SECURITY.md) | Secret handling and reporting. |
 
 Pitch and demo collateral: `docs/PITCH_DECK.md`, `docs/DEMO_SCRIPT.md`, `docs/DEMO_REHEARSAL.md`.

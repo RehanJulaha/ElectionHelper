@@ -6,22 +6,24 @@
   "googleCloudServices": {
     "clientAndHosting": [
       "Firebase Hosting",
-      "Cloud Firestore",
+      "Cloud Firestore (rules; @angular/fire provideFirestore + optional pack overlay)",
       "Firebase App Check (reCAPTCHA Enterprise provider)",
       "Firebase Analytics (Google Analytics 4)",
       "Firebase Performance Monitoring",
       "Firebase Remote Config",
-      "Firebase Cloud Functions (HTTPS callable; invoked from the SPA)",
+      "Firebase Cloud Functions (HTTPS callable; region asia-south1; CloudFunctionsService)",
       "Google Fonts (fonts.googleapis.com, fonts.gstatic.com)",
-      "Google Maps Embed API (optional; enabled when maps embed key is configured)"
+      "Google Maps Embed API (optional; enabled when maps embed key is configured)",
+      "GitHub Actions → Cloud Build (see .github/workflows/ci.yml, cloudbuild.yaml)"
     ],
     "cloudFunctionsBackend": [
-      "Vertex AI API (Gemini via Generative AI on Vertex)",
-      "Cloud Translation API",
-      "Google Sheets API",
-      "Secret Manager (Function secrets: translate API key, Sheets service account JSON)",
-      "Cloud Run (Firebase Cloud Functions 2nd gen)",
-      "Cloud Build / Artifact Registry (CI deploy pipeline; see cloudbuild.yaml)"
+      "Vertex AI API (Gemini; asia-south1; assistantAsk callable)",
+      "Cloud Translation API (glossaryTranslate callable)",
+      "Google Sheets API (exportTimelineSheet callable; googleapis)",
+      "Secret Manager (GOOGLE_TRANSLATE_API_KEY, GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON)",
+      "Cloud Run (Firebase Cloud Functions 2nd gen; asia-south1; App Check enforced)",
+      "Cloud Logging (firebase-functions/logger)",
+      "Cloud Build / Artifact Registry (CI deploy; see cloudbuild.yaml)"
     ]
   },
   "scripts": {

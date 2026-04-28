@@ -1,5 +1,7 @@
 # GCP and Firebase provisioning
 
+For a **code-level inventory** of Google services (regions, callables, Angular entry points), see **[GOOGLE_CLOUD_FIREBASE_USAGE.md](GOOGLE_CLOUD_FIREBASE_USAGE.md)**.
+
 1. Create a **GCP project** and link a **billing account** (credits).
 2. In Firebase console, **Add Firebase** to the project; enable **Firestore** (native), **Hosting**, **Functions**, **App Check** (when ready).
 3. Replace `YOUR_GCP_PROJECT_ID` in `.firebaserc` with your project id (do not commit secrets).

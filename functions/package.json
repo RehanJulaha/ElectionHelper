@@ -2,12 +2,13 @@
   "name": "epa-functions",
   "private": true,
   "googleCloudServices": [
-    "Vertex AI API (Gemini; @google-cloud/vertexai)",
-    "Cloud Translation API (REST; glossaryTranslate)",
-    "Google Sheets API (googleapis; exportTimelineSheet)",
-    "Secret Manager (GOOGLE_TRANSLATE_API_KEY, GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON)",
-    "Firebase Cloud Functions 2nd gen (Cloud Run)",
-    "Firebase App Check enforcement on callable endpoints"
+    "Vertex AI API (Gemini; @google-cloud/vertexai; region asia-south1; assistantAsk)",
+    "Cloud Translation API (REST v2; glossaryTranslate)",
+    "Google Sheets API (googleapis v4; exportTimelineSheet)",
+    "Secret Manager (GOOGLE_TRANSLATE_API_KEY; GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON)",
+    "Firebase Cloud Functions 2nd gen (asia-south1; Cloud Run; invoker public)",
+    "Firebase App Check enforcement on callable endpoints",
+    "Cloud Logging (firebase-functions/logger)"
   ],
   "engines": {
     "node": "20"

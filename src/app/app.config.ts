@@ -3,6 +3,7 @@ import {
   ApplicationConfig,
   type EnvironmentProviders,
   inject,
+  type Injector,
   isDevMode,
   provideAppInitializer,
   provideExperimentalZonelessChangeDetection,
@@ -12,10 +13,12 @@ import { provideServiceWorker } from '@angular/service-worker';
 import { provideFirebaseApp } from '@angular/fire/app';
 import { Analytics, provideAnalytics } from '@angular/fire/analytics';
 import { provideAppCheck } from '@angular/fire/app-check';
+import { provideFirestore } from '@angular/fire/firestore';
 import { providePerformance } from '@angular/fire/performance';
 import { getAnalytics } from 'firebase/analytics';
 import { getApp, initializeApp, type FirebaseOptions } from 'firebase/app';
 import { initializeAppCheck, ReCaptchaEnterpriseProvider } from 'firebase/app-check';
+import { getFirestore } from 'firebase/firestore';
 import { getPerformance } from 'firebase/performance';
 import { routes } from './app.routes';
 import {
@@ -48,8 +51,9 @@ function firebaseOptions(): FirebaseOptions {
 }
 
 /**
- * Firebase web SDK: App Check (reCAPTCHA Enterprise), Performance, Analytics (GA4).
- * Order: App → App Check → Performance → Analytics (all use default `getApp()`).
+ * Firebase web SDK: App → App Check → Firestore → Performance → Analytics (GA4).
+ * Firestore is registered here so the client graph and App Check–gated reads use one
+ * default instance; `ElectionPackService` may still lazy-import Firestore helpers for reads.
  */
 function buildFirebaseClientProviders(): readonly EnvironmentProviders[] {
   if (!isFirebaseWebConfigured()) {
@@ -68,6 +72,8 @@ function buildFirebaseClientProviders(): readonly EnvironmentProviders[] {
       )
     );
   }
+
+  providers.push(provideFirestore((_injector: Injector) => getFirestore(getApp())));
 
   providers.push(providePerformance(() => getPerformance()));
 

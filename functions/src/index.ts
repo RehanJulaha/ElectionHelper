@@ -102,6 +102,11 @@ function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+/**
+ * HTTPS callable: Gemini on Vertex AI (asia-south1). App Check required.
+ * @param request.data.prompt User question (max {@link MAX_PROMPT} chars).
+ * @returns `reply` (plain text) and `citations` (URLs).
+ */
 export const assistantAsk = onCall(
   { ...CALLABLE_BASE, enforceAppCheck: true },
   async (
@@ -165,6 +170,12 @@ export const assistantAsk = onCall(
   }
 );
 
+/**
+ * HTTPS callable: Cloud Translation API v2. App Check required. Secret: `GOOGLE_TRANSLATE_API_KEY`.
+ * @param request.data.texts Non-empty string segments (max count/chars per server limits).
+ * @param request.data.target BCP-47 target language (e.g. `hi`).
+ * @returns `translations` aligned to `texts`.
+ */
 export const glossaryTranslate = onCall(
   { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [translateApiKey] },
   async (request: CallableRequest): Promise<{ readonly translations: readonly string[] }> => {
@@ -198,6 +209,11 @@ export const glossaryTranslate = onCall(
   }
 );
 
+/**
+ * HTTPS callable: writes rows to a fixed Google Sheet. App Check required. Secret: `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`.
+ * @param request.data.rows Matrix of cell strings (non-empty).
+ * @returns Spreadsheet id and edit URL.
+ */
 export const exportTimelineSheet = onCall(
   { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [sheetsServiceAccountJson] },
   async (
