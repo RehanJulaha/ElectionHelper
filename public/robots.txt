@@ -1,0 +1,4 @@
+# Election Process Assistant — allow indexing of the deployed app (e.g. Firebase Hosting).
+# Note: github.com/robots.txt is owned by GitHub and cannot be changed from this repository.
+User-agent: *
+Allow: /
