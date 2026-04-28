@@ -149,11 +149,20 @@
     "unconfigured": "Firebase is not configured in this build, so cloud answers are unavailable.",
     "promptLabel": "Your question",
     "placeholder": "Example: What does a Returning Officer do?",
+    "helper": "Ask one clear question at a time for the best answer quality.",
     "submit": "Ask",
     "loading": "Getting an answer…",
     "errorGeneric": "Could not reach the assistant. Try again later.",
     "replyHeading": "Answer",
-    "citations": "Official links"
+    "emptyState": "Your answer appears here after you ask a question.",
+    "citations": "Official links",
+    "quickQuestionsLabel": "Quick questions",
+    "suggestions": {
+      "pollingDay": "What should a voter carry on polling day?",
+      "nota": "What does NOTA mean in Lok Sabha elections?",
+      "returningOfficer": "What are the duties of a Returning Officer?",
+      "counting": "How are votes counted and results declared?"
+    }
   },
   "glossaryUi": {
     "cloudTranslate": "Improve Hindi with Google Cloud Translation",

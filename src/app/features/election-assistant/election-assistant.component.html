@@ -1,42 +1,82 @@
-<h2 class="page-title">{{ 'assistant.title' | transloco }}</h2>
-<p class="lede">{{ 'assistant.lede' | transloco }}</p>
-@if (!canUse) {
-  <p class="muted" role="status">{{ 'assistant.unconfigured' | transloco }}</p>
-} @else {
-  <label class="field-label" for="assistant-prompt">{{ 'assistant.promptLabel' | transloco }}</label>
-  <textarea
-    id="assistant-prompt"
-    class="prompt"
-    rows="5"
-    [value]="prompt()"
-    (input)="onPromptInput($event)"
-    [attr.placeholder]="'assistant.placeholder' | transloco"
-  ></textarea>
-  <div class="row">
-    <button type="button" class="btn" [disabled]="loading() || prompt().trim().length === 0" (click)="submit()">
-      {{ 'assistant.submit' | transloco }}
-    </button>
-    @if (loading()) {
-      <span class="muted" role="status">{{ 'assistant.loading' | transloco }}</span>
+<section class="assistant-page" aria-labelledby="assistant-title">
+  <header class="hero">
+    <h2 class="page-title" id="assistant-title">{{ 'assistant.title' | transloco }}</h2>
+    <p class="lede">{{ 'assistant.lede' | transloco }}</p>
+  </header>
+
+  <div class="layout">
+    <article class="card card--ask">
+      @if (!canUse) {
+        <p class="status" role="status">{{ 'assistant.unconfigured' | transloco }}</p>
+      } @else {
+        <div class="suggestions" [attr.aria-label]="'assistant.quickQuestionsLabel' | transloco">
+          <p class="suggestions__title">{{ 'assistant.quickQuestionsLabel' | transloco }}</p>
+          <div class="suggestions__chips">
+            @for (key of suggestedPrompts; track key) {
+              <button
+                type="button"
+                class="chip"
+                [disabled]="loading()"
+                (click)="useSuggestion(key)"
+              >
+                {{ key | transloco }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <label class="field-label" for="assistant-prompt">{{ 'assistant.promptLabel' | transloco }}</label>
+        <textarea
+          id="assistant-prompt"
+          class="prompt"
+          rows="6"
+          [value]="prompt()"
+          (input)="onPromptInput($event)"
+          [attr.placeholder]="'assistant.placeholder' | transloco"
+          [attr.aria-describedby]="'assistant-help assistant-count'"
+        ></textarea>
+        <div class="meta-row">
+          <p id="assistant-help" class="muted">{{ 'assistant.helper' | transloco }}</p>
+          <p id="assistant-count" class="counter" [class.counter--limit]="promptLength() >= maxPromptChars">
+            {{ promptLength() }} / {{ maxPromptChars }}
+          </p>
+        </div>
+
+        <div class="actions">
+          <button type="button" class="btn" [disabled]="!canSubmit()" (click)="submit()">
+            {{ 'assistant.submit' | transloco }}
+          </button>
+          @if (loading()) {
+            <span class="muted" role="status" aria-live="polite">{{ 'assistant.loading' | transloco }}</span>
+          }
+        </div>
+
+        @if (errorKey(); as ek) {
+          <p class="status status--error" role="alert">{{ ek | transloco }}</p>
+        }
+      }
+    </article>
+
+    @if (result(); as r) {
+      <aside class="card card--reply" aria-labelledby="reply-heading">
+        <h3 id="reply-heading">{{ 'assistant.replyHeading' | transloco }}</h3>
+        <p class="reply-text">{{ r.reply }}</p>
+        @if (r.citations.length > 0) {
+          <h4>{{ 'assistant.citations' | transloco }}</h4>
+          <ul class="citations">
+            @for (c of r.citations; track c) {
+              <li>
+                <a [href]="c" target="_blank" rel="noopener noreferrer">{{ c }}</a>
+              </li>
+            }
+          </ul>
+        }
+      </aside>
+    } @else {
+      <aside class="card card--reply card--placeholder" aria-live="polite">
+        <h3>{{ 'assistant.replyHeading' | transloco }}</h3>
+        <p class="muted">{{ 'assistant.emptyState' | transloco }}</p>
+      </aside>
     }
   </div>
-  @if (errorKey(); as ek) {
-    <p class="status status--error" role="alert">{{ ek! | transloco }}</p>
-  }
-  @if (result(); as r) {
-    <section class="reply" aria-labelledby="reply-heading">
-      <h3 id="reply-heading">{{ 'assistant.replyHeading' | transloco }}</h3>
-      <p>{{ r.reply }}</p>
-      @if (r.citations.length > 0) {
-        <h4>{{ 'assistant.citations' | transloco }}</h4>
-        <ul>
-          @for (c of r.citations; track c) {
-            <li>
-              <a [href]="c" target="_blank" rel="noopener noreferrer">{{ c }}</a>
-            </li>
-          }
-        </ul>
-      }
-    </section>
-  }
-}
+</section>

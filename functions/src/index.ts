@@ -7,6 +7,10 @@ import { google } from 'googleapis';
 const MAX_PROMPT = 2000;
 const MAX_TRANSLATE_CHARS = 8000;
 const MAX_TRANSLATE_ITEMS = 40;
+const TIMELINE_EXPORT_SPREADSHEET_ID = '1aBfhaCp4jfZpQofiwlqg7r7yvVI2TrhLDrIa7P3ZXYQ';
+const GEMINI_MODEL_CANDIDATES = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest'];
+const GEMINI_MAX_RETRIES_PER_MODEL = 2;
+const GEMINI_RETRY_BASE_DELAY_MS = 600;
 
 /** Gen2 callables sit behind Cloud Run; browsers need unauthenticated HTTP invoke so OPTIONS/POST reach the handler (App Check + Firebase still gate abuse). */
 const CALLABLE_BASE = { region: 'asia-south1' as const, invoker: 'public' as const };
@@ -43,6 +47,29 @@ async function translateWithGoogleCloud(
   return rows.map((r) => r.translatedText ?? '');
 }
 
+function isModelUnavailableError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  return error.message.includes('404') || error.message.includes('not found for API version');
+}
+
+function isModelTransientCapacityError(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  return (
+    error.message.includes('503') ||
+    error.message.includes('Service Unavailable') ||
+    error.message.includes('high demand') ||
+    error.message.includes('429')
+  );
+}
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const assistantAsk = onCall(
   { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [geminiApiKey] },
   async (
@@ -66,15 +93,37 @@ export const assistantAsk = onCall(
     }
     try {
       const genAI = new GoogleGenerativeAI(key);
-      const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
       const fullPrompt = `${RAG_CONTEXT}\n\nUser question:\n${prompt}\n\nRespond in plain text under 400 words.`;
-      const result = await model.generateContent(fullPrompt);
-      const text = result.response.text().trim();
-      return {
-        reply: text.length > 0 ? text : 'No model text returned.',
-        citations: ['https://www.eci.gov.in/voter-education/', 'https://www.eci.gov.in/'],
-      };
+      for (const modelName of GEMINI_MODEL_CANDIDATES) {
+        for (let attempt = 0; attempt <= GEMINI_MAX_RETRIES_PER_MODEL; attempt += 1) {
+          try {
+            const model = genAI.getGenerativeModel({ model: modelName });
+            const result = await model.generateContent(fullPrompt);
+            const text = result.response.text().trim();
+            return {
+              reply: text.length > 0 ? text : 'No model text returned.',
+              citations: ['https://www.eci.gov.in/voter-education/', 'https://www.eci.gov.in/'],
+            };
+          } catch (modelErr) {
+            if (isModelUnavailableError(modelErr)) {
+              logger.warn('assistant_model_unavailable', { modelName });
+              break;
+            }
+            if (isModelTransientCapacityError(modelErr) && attempt < GEMINI_MAX_RETRIES_PER_MODEL) {
+              const delayMs = GEMINI_RETRY_BASE_DELAY_MS * 2 ** attempt;
+              logger.warn('assistant_model_retry', { modelName, attempt: attempt + 1, delayMs });
+              await wait(delayMs);
+              continue;
+            }
+            throw modelErr;
+          }
+        }
+      }
+      throw new HttpsError('failed-precondition', 'assistant_model_unavailable');
     } catch (e) {
+      if (e instanceof HttpsError) {
+        throw e;
+      }
       logger.error('assistant_gemini_error', e);
       throw new HttpsError('internal', 'assistant_failed');
     }
@@ -143,25 +192,16 @@ export const exportTimelineSheet = onCall(
       const auth = new google.auth.JWT({
         email: creds.client_email,
         key: creds.private_key,
-        scopes: ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive.file'],
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
       const sheets = google.sheets({ version: 'v4', auth });
-      const created = await sheets.spreadsheets.create({
-        requestBody: {
-          properties: { title: `EPA timeline export ${new Date().toISOString().slice(0, 10)}` },
-          sheets: [{ properties: { title: 'Checklist' } }],
-        },
-      });
-      const spreadsheetId = created.data.spreadsheetId;
-      if (!spreadsheetId) {
-        throw new Error('no_spreadsheet_id');
-      }
       await sheets.spreadsheets.values.update({
-        spreadsheetId,
-        range: 'Checklist!A1',
+        spreadsheetId: TIMELINE_EXPORT_SPREADSHEET_ID,
+        range: 'A1',
         valueInputOption: 'USER_ENTERED',
         requestBody: { values: matrix },
       });
+      const spreadsheetId = TIMELINE_EXPORT_SPREADSHEET_ID;
       const spreadsheetUrl = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit`;
       return { spreadsheetId, spreadsheetUrl };
     } catch (e) {
