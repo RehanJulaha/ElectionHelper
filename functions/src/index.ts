@@ -8,8 +8,17 @@ const MAX_PROMPT = 2000;
 const MAX_TRANSLATE_CHARS = 8000;
 const MAX_TRANSLATE_ITEMS = 40;
 const TIMELINE_EXPORT_SPREADSHEET_ID = '1aBfhaCp4jfZpQofiwlqg7r7yvVI2TrhLDrIa7P3ZXYQ';
-/** Vertex AI model ids (same region as the callable). */
-const GEMINI_VERTEX_MODELS = ['gemini-2.0-flash-001', 'gemini-1.5-flash-002', 'gemini-1.5-flash'] as const;
+/**
+ * Vertex AI model ids (same region as the callable).
+ * Prefer current publisher ids; version-suffixed ids (e.g. …-001) are retired often and yield 404 for all models.
+ * @see https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions
+ */
+const GEMINI_VERTEX_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+] as const;
 const VERTEX_LOCATION = 'asia-south1' as const;
 const GEMINI_MAX_RETRIES_PER_MODEL = 2;
 const GEMINI_RETRY_BASE_DELAY_MS = 600;
@@ -127,7 +136,8 @@ export const assistantAsk = onCall(
             };
           } catch (modelErr) {
             if (isModelUnavailableError(modelErr)) {
-              logger.warn('assistant_model_unavailable', { modelName });
+              const detail = modelErr instanceof Error ? modelErr.message : String(modelErr);
+              logger.warn('assistant_model_skip', { modelName, detail });
               break;
             }
             if (isModelTransientCapacityError(modelErr) && attempt < GEMINI_MAX_RETRIES_PER_MODEL) {
@@ -140,6 +150,10 @@ export const assistantAsk = onCall(
           }
         }
       }
+      logger.error('assistant_all_models_unavailable', {
+        modelsTried: [...GEMINI_VERTEX_MODELS],
+        region: VERTEX_LOCATION,
+      });
       throw new HttpsError('failed-precondition', 'assistant_model_unavailable');
     } catch (e) {
       if (e instanceof HttpsError) {
