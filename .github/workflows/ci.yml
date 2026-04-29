@@ -88,7 +88,7 @@ jobs:
       - uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
-      - uses: google-github-actions/setup-gcloud@v2
+      - uses: google-github-actions/setup-gcloud@v3
       - name: Submit Cloud Build (only supported deploy path)
         env:
           # Optional repo variable: hosting | hosting-fs | full (default hosting). Use full when Blaze + secrets are ready.
