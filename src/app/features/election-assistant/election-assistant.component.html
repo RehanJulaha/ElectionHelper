@@ -62,7 +62,7 @@
         <h3 id="reply-heading">{{ 'assistant.replyHeading' | transloco }}</h3>
         <p class="reply-text">{{ r.reply }}</p>
         @if (r.citations.length > 0) {
-          <h4>{{ 'assistant.citations' | transloco }}</h4>
+          <p class="citations__title">{{ 'assistant.citations' | transloco }}</p>
           <ul class="citations">
             @for (c of r.citations; track c) {
               <li>

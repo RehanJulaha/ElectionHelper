@@ -165,10 +165,17 @@
   gap: var(--space-4, 1rem);
 }
 
-.card--reply h3,
-.card--reply h4 {
+.card--reply h3 {
   margin: 0;
   font-family: var(--font-heading);
+}
+
+.citations__title {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: var(--font-size-md, 1rem);
+  font-weight: var(--font-weight-semibold, 600);
+  color: var(--color-text);
 }
 
 .reply-text {

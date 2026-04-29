@@ -50,11 +50,6 @@ function firebaseOptions(): FirebaseOptions {
   return options;
 }
 
-/**
- * Firebase web SDK: App → App Check → Firestore → Performance → Analytics (GA4).
- * Firestore is registered here so the client graph and App Check–gated reads use one
- * default instance; `ElectionPackService` may still lazy-import Firestore helpers for reads.
- */
 function buildFirebaseClientProviders(): readonly EnvironmentProviders[] {
   if (!isFirebaseWebConfigured()) {
     return [];

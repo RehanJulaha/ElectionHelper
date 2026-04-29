@@ -37,7 +37,7 @@ When a non-empty Firebase web config is present, the app registers **Performance
 
 ## Firebase Analytics (GA4)
 
-When `measurementId` is non-empty in `src/assets/config/firebase-public.json`, the app registers **Google Analytics** via **`@angular/fire`** (`provideAnalytics`). **Collection is gated behind an in-app consent banner** (`PrivacyConsentService` + `ConsentBannerComponent`) aligned with India **DPDPA** expectations: users can decline analytics and still use the app; `setConsent` + `setAnalyticsCollectionEnabled` reflect the choice. Leave `measurementId` empty in environments where analytics must stay off.
+When `measurementId` is non-empty in `src/assets/config/firebase-public.json`, the app registers **Google Analytics** via **`@angular/fire`** (`provideAnalytics`). **Collection is gated behind an in-app consent strip** implemented as a named **`role="region"`** landmark (`PrivacyConsentService` + `ConsentBannerComponent`) aligned with India **DPDPA** expectations: users can decline analytics and still use the app; `setConsent` + `setAnalyticsCollectionEnabled` reflect the choice. Leave `measurementId` empty in environments where analytics must stay off.
 
 ## Google Cloud budget alerts
 

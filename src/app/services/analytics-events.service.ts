@@ -49,7 +49,6 @@ export class AnalyticsEventsService {
     logEvent(a, 'language_changed', { language: lang });
   }
 
-  /** Length-only payload to avoid storing free-text questions in analytics. */
   logAssistantQuestionAsked(promptCharLength: number): void {
     const a = this.modular();
     if (!a || !this.canLog()) {

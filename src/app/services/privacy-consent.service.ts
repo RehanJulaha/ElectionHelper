@@ -48,21 +48,16 @@ export class PrivacyConsentService {
       try {
         localStorage.setItem(STORAGE_KEY, next);
       } catch {
-        /* private mode */
+        void 0;
       }
     }
     this.applyFirebaseMeasurement();
   }
 
-  /** Call after Firebase Analytics is constructed so consent + collection flags apply. */
   syncMeasurementAfterAnalyticsReady(): void {
     this.applyFirebaseMeasurement();
   }
 
-  /**
-   * Applies GA4 consent mode + collection flag for the current {@link decision}.
-   * No-op when Analytics is not registered (missing `measurementId`).
-   */
   private applyFirebaseMeasurement(): void {
     const modular = this.modularAnalytics();
     if (!modular) {

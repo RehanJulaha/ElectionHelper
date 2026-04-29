@@ -9,7 +9,6 @@ export type FirebasePublicConfig = Readonly<{
   readonly appId: string;
   readonly measurementId: string;
   readonly appCheckSiteKey: string;
-  /** Optional: Maps Embed API key (HTTP referrer–restricted in Google Cloud Console). */
   readonly mapsEmbedApiKey: string;
 }>;
 

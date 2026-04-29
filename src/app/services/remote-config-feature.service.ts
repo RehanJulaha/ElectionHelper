@@ -2,14 +2,6 @@ import { Injectable, signal, isDevMode } from '@angular/core';
 import { getApp } from 'firebase/app';
 import { isFirebaseWebConfigured } from '../firebase/firebase-public';
 
-/**
- * Remote Config–driven flags (defaults match static behaviour when RC is unavailable).
- *
- * Firebase Console → Remote Config parameter keys (all optional):
- * - `footer_promo_text` (string)
- * - `rajya_sabha_preview` (boolean as string)
- * - `election_pack_channel` — `assets` | `firestore` (when `firestore`, the election pack service loads `contentPacks/india-lok-sabha-published`)
- */
 @Injectable({ providedIn: 'root' })
 export class RemoteConfigFeatureService {
   private readonly footerPromoState = signal<string>('');
@@ -39,7 +31,7 @@ export class RemoteConfigFeatureService {
       const ch = getValue(rc, 'election_pack_channel').asString();
       this.packChannelState.set(ch === 'firestore' ? 'firestore' : 'assets');
     } catch {
-      /* RC is optional when blocked or offline */
+      void 0;
     }
   }
 }

@@ -3,7 +3,6 @@ import { DomSanitizer, type SafeResourceUrl } from '@angular/platform-browser';
 import { TranslocoPipe } from '@ngneat/transloco';
 import { isMapsEmbedConfigured, isNonEmptyConfigValue, readFirebasePublicConfig } from '../../firebase/firebase-public';
 
-/** English place strings for Maps `q=` (locale-neutral for geocoding). */
 const MAP_PLACE_IDS = ['eci_hq', 'eci_vikram', 'ceo_delhi_example'] as const;
 type MapPlaceId = (typeof MAP_PLACE_IDS)[number];
 

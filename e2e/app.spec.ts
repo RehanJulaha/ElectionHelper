@@ -1,5 +1,17 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
+
+function seriousOrCriticalViolations(
+  violations: readonly { readonly impact?: string }[],
+): readonly { readonly impact?: string }[] {
+  return violations.filter((v) => ['serious', 'critical'].includes(v.impact ?? ''));
+}
+
+async function assertNoSeriousAxeViolations(page: Page, path: string): Promise<void> {
+  await page.goto(path);
+  const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
+  expect(seriousOrCriticalViolations(results.violations)).toEqual([]);
+}
 
 test.describe('Election Process Assistant', () => {
   test('home shows Lok Sabha scope', async ({ page }) => {
@@ -31,14 +43,16 @@ test.describe('Election Process Assistant', () => {
     await page.getByRole('button', { name: /Hindi|हिंदी/i }).click();
     await expect(page.locator('html')).toHaveAttribute('lang', 'hi');
   });
-  test('axe home has no serious violations', async ({ page }) => {
-    await page.goto('/');
-    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
-    expect(results.violations.filter((v) => ['serious', 'critical'].includes(v.impact ?? ''))).toEqual([]);
+  test('axe home has no serious or critical violations', async ({ page }) => {
+    await assertNoSeriousAxeViolations(page, '/');
   });
-  test('axe glossary', async ({ page }) => {
-    await page.goto('/glossary');
-    const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa']).analyze();
-    expect(results.violations.filter((v) => v.impact === 'critical')).toEqual([]);
+  test('axe glossary has no serious or critical violations', async ({ page }) => {
+    await assertNoSeriousAxeViolations(page, '/glossary');
+  });
+  test('axe locator has no serious or critical violations', async ({ page }) => {
+    await assertNoSeriousAxeViolations(page, '/locator');
+  });
+  test('axe assistant has no serious or critical violations', async ({ page }) => {
+    await assertNoSeriousAxeViolations(page, '/assistant');
   });
 });

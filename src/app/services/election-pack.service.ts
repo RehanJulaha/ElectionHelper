@@ -7,13 +7,8 @@ import { isFirebaseWebConfigured } from '../firebase/firebase-public';
 import { catchError, finalize, of, retry } from 'rxjs';
 import { RemoteConfigFeatureService } from './remote-config-feature.service';
 
-/** Bundled Lok Sabha education pack (same-origin, cacheable). */
 const PACK_ASSET_URL = '/assets/content/india-lok-sabha.json';
 
-/**
- * localStorage key for offline/stale-while-revalidate behaviour.
- * Bump suffix if persisted JSON shape changes incompatibly.
- */
 const PACK_STORAGE_KEY = 'epa-election-pack-v1';
 
 export type ElectionPackLoadError = 'parse_failed' | 'network';
@@ -40,12 +35,6 @@ export class ElectionPackService {
     });
   }
 
-  /**
-   * Loads the election pack from `/assets`, with:
-   * - Hydration from localStorage when present (validated) for faster paint and offline fallback.
-   * - Retries on transient network errors.
-   * - Persistence after a successful parse (Room-like cache for low connectivity).
-   */
   loadFromAssets(): void {
     this.errorState.set(null);
     const cached = this.readStoredPack();
@@ -111,14 +100,10 @@ export class ElectionPackService {
     try {
       localStorage.setItem(PACK_STORAGE_KEY, JSON.stringify(pack));
     } catch {
-      /* quota or private mode — non-fatal */
+      void 0;
     }
   }
 
-  /**
-   * When Remote Config `election_pack_channel` is `firestore`, overlays the pack from
-   * `contentPacks/india-lok-sabha-published` (same schema as the asset JSON).
-   */
   private async loadPublishedPackFromFirestore(): Promise<void> {
     if (!isFirebaseWebConfigured() || this.firestorePackInFlight) {
       return;
@@ -138,7 +123,7 @@ export class ElectionPackService {
         this.persistPack(parsed.data);
       }
     } catch {
-      /* App Check / network / rules — keep asset-backed pack */
+      void 0;
     } finally {
       this.firestorePackInFlight = false;
     }

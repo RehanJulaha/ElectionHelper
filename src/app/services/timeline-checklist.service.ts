@@ -27,7 +27,7 @@ export class TimelineChecklistService {
       }
       this.checkedState.set({ ...(parsed as Record<string, boolean>) });
     } catch {
-      /* ignore */
+      void 0;
     }
   }
 
@@ -38,7 +38,7 @@ export class TimelineChecklistService {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
     } catch {
-      /* quota */
+      void 0;
     }
   }
 

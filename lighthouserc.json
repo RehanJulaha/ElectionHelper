@@ -2,14 +2,19 @@
   "ci": {
     "collect": {
       "numberOfRuns": 1,
-      "url": ["http://127.0.0.1:4200/"],
+      "url": [
+        "http://127.0.0.1:4200/",
+        "http://127.0.0.1:4200/glossary",
+        "http://127.0.0.1:4200/locator",
+        "http://127.0.0.1:4200/assistant"
+      ],
       "settings": { "preset": "desktop" }
     },
     "assert": {
       "assertions": {
         "categories:performance": ["error", { "minScore": 0.8 }],
-        "categories:accessibility": ["error", { "minScore": 0.9 }],
-        "categories:best-practices": ["warn", { "minScore": 0.85 }]
+        "categories:accessibility": ["error", { "minScore": 1 }],
+        "categories:best-practices": ["warn", { "minScore": 0.9 }]
       }
     }
   }

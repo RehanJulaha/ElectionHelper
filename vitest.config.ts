@@ -10,7 +10,6 @@ export default defineConfig({
       reporter: ['text', 'json-summary', 'lcov'],
       include: ['src/lib/**/*.ts'],
       exclude: ['**/*.spec.ts'],
-      // Gates (published in README badges): fail CI if coverage drops below these.
       thresholds: {
         statements: 90,
         branches: 85,

@@ -8,11 +8,6 @@ const MAX_PROMPT = 2000;
 const MAX_TRANSLATE_CHARS = 8000;
 const MAX_TRANSLATE_ITEMS = 40;
 const TIMELINE_EXPORT_SPREADSHEET_ID = '1aBfhaCp4jfZpQofiwlqg7r7yvVI2TrhLDrIa7P3ZXYQ';
-/**
- * Vertex AI model ids (same region as the callable).
- * Prefer current publisher ids; version-suffixed ids (e.g. …-001) are retired often and yield 404 for all models.
- * @see https://cloud.google.com/vertex-ai/generative-ai/docs/learn/model-versions
- */
 const GEMINI_VERTEX_MODELS = [
   'gemini-2.5-flash',
   'gemini-2.5-flash-lite',
@@ -23,10 +18,8 @@ const VERTEX_LOCATION = 'asia-south1' as const;
 const GEMINI_MAX_RETRIES_PER_MODEL = 2;
 const GEMINI_RETRY_BASE_DELAY_MS = 600;
 
-/** Gen2 callables sit behind Cloud Run; browsers need unauthenticated HTTP invoke so OPTIONS/POST reach the handler (App Check + Firebase still gate abuse). */
 const CALLABLE_BASE = { region: 'asia-south1' as const, invoker: 'public' as const };
 
-/** Secret Manager *names* only — never put key material or JSON in source (use `firebase functions:secrets:set`). */
 const translateApiKey = defineSecret('GOOGLE_TRANSLATE_API_KEY');
 const sheetsServiceAccountJson = defineSecret('GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON');
 
@@ -102,11 +95,6 @@ function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * HTTPS callable: Gemini on Vertex AI (asia-south1). App Check required.
- * @param request.data.prompt User question (max {@link MAX_PROMPT} chars).
- * @returns `reply` (plain text) and `citations` (URLs).
- */
 export const assistantAsk = onCall(
   { ...CALLABLE_BASE, enforceAppCheck: true },
   async (
@@ -170,12 +158,6 @@ export const assistantAsk = onCall(
   }
 );
 
-/**
- * HTTPS callable: Cloud Translation API v2. App Check required. Secret: `GOOGLE_TRANSLATE_API_KEY`.
- * @param request.data.texts Non-empty string segments (max count/chars per server limits).
- * @param request.data.target BCP-47 target language (e.g. `hi`).
- * @returns `translations` aligned to `texts`.
- */
 export const glossaryTranslate = onCall(
   { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [translateApiKey] },
   async (request: CallableRequest): Promise<{ readonly translations: readonly string[] }> => {
@@ -209,11 +191,6 @@ export const glossaryTranslate = onCall(
   }
 );
 
-/**
- * HTTPS callable: writes rows to a fixed Google Sheet. App Check required. Secret: `GOOGLE_SHEETS_SERVICE_ACCOUNT_JSON`.
- * @param request.data.rows Matrix of cell strings (non-empty).
- * @returns Spreadsheet id and edit URL.
- */
 export const exportTimelineSheet = onCall(
   { ...CALLABLE_BASE, enforceAppCheck: true, secrets: [sheetsServiceAccountJson] },
   async (

@@ -8,11 +8,6 @@ interface ThemeFile {
   readonly dark: Readonly<Record<string, string>>;
 }
 
-/**
- * Applies theme tokens via {@link CSSStyleSheet} and `adoptedStyleSheets` so CSP
- * does not require `style-src 'unsafe-inline'` for `:root` variables (unlike
- * `element.style.setProperty`, which counts as an inline style).
- */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
   private readonly http = inject(HttpClient);
@@ -71,7 +66,6 @@ export class ThemeService {
     sheet.replaceSync(`:root { ${parts.join(';')} }`);
   }
 
-  /** Strip characters that could break out of a declaration if `theme.json` were tampered with. */
   private sanitizeCssDeclarationValue(value: string): string {
     const v = value.replace(/[\n\r;{}\\]/g, '').trim();
     return v.length > 0 ? v : 'unset';
